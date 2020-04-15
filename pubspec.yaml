@@ -28,6 +28,7 @@ flutter:
     - assets/logo/Name.png
     - assets/logo/NameIcon.png
     - assets/logo/Icon.png
+    - assets/imgs/loading.gif
 
 
   uses-material-design: true
