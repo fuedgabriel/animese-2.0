@@ -3,10 +3,8 @@ import 'package:animese/screens/AnimePoster/Poster.dart';
 //widget
 import 'package:flutter/material.dart';
 //request
-import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
-import 'package:animese/request/Request.dart';
-import 'dart:convert';
+
 
 // ignore: must_be_immutable
 class ContentScroll extends StatelessWidget {
@@ -39,8 +37,8 @@ class ContentScroll extends StatelessWidget {
                   Stack(
                     children: <Widget>[
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        height: MediaQuery.of(context).size.height * 0.2,
+                        height: MediaQuery.of(context).size.height * 0.30,
+                        width: MediaQuery.of(context).size.width * 0.30,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.contain,
@@ -52,26 +50,12 @@ class ContentScroll extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: () async {
-                            ANIMES.Description(images[index].id).then((response){
-                              final DescriptionJson movie = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
-                              String temporada;
-                              if(movie.numTemporada.toString() == ''){
-                                temporada = '1º temporada';
-                              }
-                              else{
-                                temporada = movie.numTemporada.toString();
-                              }
-                              String categoria = '';
-                              for(int i = 0; i< movie.cat.length; i++){
-                                categoria = categoria+', '+movie.cat[i].nome;
-                              }
-//                              Navigator.push(
-//                                context,
-//                                MaterialPageRoute(
-//                                  builder: (context) => Videoscreen(movie, temporada, categoria),
-//                                ),
-//                              );
-                            });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Videoscreen(images[index].id),
+                              ),
+                            );
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10.0),
@@ -100,7 +84,6 @@ class ContentScroll extends StatelessWidget {
                       ),
                     ],
                   ),
-//                    Container(margin: EdgeInsets.symmetric(horizontal: 3.0, vertical: 3.0)),
                 ],
               )
           );

@@ -10,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 //Json HomePage
-//import 'package:animese/request/JSON/HomeJson/HomeJson.dart';
-//import 'package:animese/request/JSON/HomeJson/HomeLancamentoJson.dart';
+
 //Widget
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animese/widgets/Drawer.dart';
 //Desing
 //import 'package:swipe_button/swipe_button.dart';
@@ -102,24 +102,14 @@ class _HomePage extends State<HomePage> {
     );
   }
 }
-//ListView(
-//children: <Widget>[
-//Padding(padding: EdgeInsets.only(bottom: 10)),
-//ContentScrollFavorite(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//ContentScrollFavorite(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//ContentScrollFavorite(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//ContentScrollFavorite(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//ContentScrollFavorite(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//ContentScrollFavorite(images: ultimosOvas, title: 'Últimos Ova\'s', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-//
-//],
-//),
 
 class DataSearch extends SearchDelegate<String>{
   List id;
   List recent;
   DataSearch(this.recent);
   List searchNome = [];
+  List searchSub = [];
+  List searchCap = [];
 
   saverecent(sugestion) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -183,14 +173,18 @@ class DataSearch extends SearchDelegate<String>{
 
   @override
   Widget buildSuggestions(BuildContext context) {
+
     // Show when someone searches for something
     final suggestionList = query.isEmpty ?recent :searchNome.where((p) => p.toString().toUpperCase().contains(query.toUpperCase())).toList();
-
+    final subtitleList   = query.isEmpty ?recent :searchSub;
+    final subCapaList   = query.isEmpty ?recent :searchCap;
 
     ANIMES.AnimeSearch(query).then((response){
       Iterable lista = json.decode(response.body)['animes']['animes'];
       List<AnimeListJson> list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
       searchNome = list.map((f) => f.nome).toList();
+      searchSub = list.map((f) => f.temporada).toList();
+      searchCap = list.map((f) => f.capa).toList();
       id = list.map((f) => f.id).toList();
 
     });
@@ -200,43 +194,38 @@ class DataSearch extends SearchDelegate<String>{
           saverecent(suggestionList[index]);
           for(int i = 0; i<searchNome.length; i++){
             if(suggestionList[index].toString() == searchNome[i]){
-              ANIMES.Description(id[i]).then((response){
-                final DescriptionJson movie = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
-                String temporada;
-                if(movie.numTemporada.toString() == ''){
-                  temporada = '1º temporada';
-                }
-                else{
-                  temporada = movie.numTemporada.toString();
-                }
-                String categoria = '';
-                for(int i = 0; i< movie.cat.length; i++){
-                  categoria = categoria+', '+movie.cat[i].nome;
-                }
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                    builder: (context) => Videoscreen(movie, temporada, categoria),
-//                  ),
-//                );
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Videoscreen(id[i]),
+                ),
+              );
             }
           }
         },
 
         contentPadding: EdgeInsets.only(bottom: 3, top: 3, left: 5),
-        leading: Image.asset('assets/logo/Icon.png',height: 24,),
+
+        leading: CachedNetworkImage(
+          imageUrl: subCapaList[index],
+          imageBuilder: (context, imageProvider) => Image(image: imageProvider,),
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error, color: Colors.red,),
+        ),
+        subtitle: Text(subtitleList[index], style: TextStyle(
+          color: Colors.white.withOpacity(0.9)
+        ),),
         title: RichText(
           text: TextSpan(
             text: suggestionList[index].substring(0, query.length),
             style: TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontWeight: FontWeight.bold
             ),
             children: [
               TextSpan(
                   text: suggestionList[index].substring(query.length),
-                  style: TextStyle(color: Colors.white.withOpacity(0.8))
+                  style: TextStyle(color: Colors.white10.withOpacity(0.8))
               ),
             ],
           ),

@@ -1,9 +1,13 @@
 //widget
-import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:animese/widgets/HexColor.dart';
+import 'widget/horizontal_scroll.dart';
+import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
 import 'widget/circular_clipper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //Request
+import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 import 'dart:convert';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 import 'package:animese/request/Request.dart';
@@ -28,17 +32,18 @@ class _VideoscreenState extends State<Videoscreen> {
   IconData __obscureText = Icons.favorite;
 
   String urlImage = '';
-  String releases = 'Carregando....';
+  String releases = '.....';
   String season = 'Carregando...';
-  String category = 'Carregando';
+  String category = '.....';
   String description = 'Carregando...';
-  String temp = 'Carregando...';
-  String status = 'Carregando';
+  String temp = '...';
+  String status = '...';
   String name = 'Carregando...';
-  String nameTemp = 'Carregando';
-  String espisodes = 'Carregando...';
-
-  DescriptionJson movie;
+  String nameTemp = 'Carregando...';
+  String espisodes = '...';
+  DescriptionJson anime;
+  var ova = List<LittleListAnimeJson>();
+  var movie = List<LittleListAnimeJson>();
 
 
   _VideoscreenState(id){
@@ -47,25 +52,27 @@ class _VideoscreenState extends State<Videoscreen> {
   _getDescription(id){
     ANIMES.Description(id).then((response){
       setState(() {
-        movie = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
-        if(movie.numTemporada.toString() == ''){
+        anime = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
+        movie = anime.filmes.map((model) => LittleListAnimeJson.fromJson(model.toJson())).toList();
+        ova = anime.ovas.map((model) => LittleListAnimeJson.fromJson(model.toJson())).toList();
+        if(anime.numTemporada.toString() == ''){
           temp = '1º temporada';
         }
         else{
-          temp = movie.numTemporada.toString();
+          temp = anime.numTemporada.toString();
         }
         category = '';
-        for(int i = 0; i< movie.cat.length; i++){
-          category = category +', '+movie.cat[i].nome;
+        for(int i = 0; i< anime.cat.length; i++){
+          category = category +', '+anime.cat[i].nome;
         }
-        season = movie.temporada;
-        espisodes = movie.epLeg.toString();
-        releases = movie.lancamento;
-        urlImage = movie.capa;
-        description = movie.ds;
-        name = movie.nome;
-        nameTemp = movie.temporada;
-        status = movie.producao;
+        season = anime.temporada;
+        espisodes = anime.epLeg.toString();
+        releases = anime.lancamento;
+        urlImage = anime.capa;
+        description = anime.ds;
+        name = anime.nome;
+        nameTemp = anime.temporada;
+        status = anime.producao;
       });
     });
   }
@@ -139,7 +146,7 @@ class _VideoscreenState extends State<Videoscreen> {
                     onPressed: ()
                     {
                       int ep;
-                      if(movie.btnDub == true){
+                      if(anime.btnDub == true){
                         showGeneralDialog(
                             barrierColor: Colors.black.withOpacity(0.5),
                             transitionBuilder: (context, a1, a2, widget) {
@@ -158,22 +165,22 @@ class _VideoscreenState extends State<Videoscreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         FlatButton(child: Text('Legendado', style: TextStyle(color: Colors.white),), onPressed: (){
-                                          ep = movie.epLeg;
+                                          ep = anime.epLeg;
                                           Navigator.pop(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'LEG'),
+                                              builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG'),
                                             ),
                                           );
                                         }),
                                         FlatButton(child: Text('Dublado', style: TextStyle(color: Colors.white),),onPressed: (){
-                                          ep = movie.epDub;
+                                          ep = anime.epDub;
                                           Navigator.pop(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'DUB'),
+                                              builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB'),
                                             ),
                                           );
                                         }),
@@ -195,7 +202,7 @@ class _VideoscreenState extends State<Videoscreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'LEG'),
+                            builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG'),
                           ),
                         );
                       }
@@ -338,7 +345,7 @@ class _VideoscreenState extends State<Videoscreen> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        Text(espisodes, //movie.epLeg.toString()
+                        Text(espisodes, //anime.epLeg.toString()
                           style: TextStyle(
                             color: descriptionD,
                             fontSize: 20.0,
@@ -379,12 +386,11 @@ class _VideoscreenState extends State<Videoscreen> {
               ],
             ),
           ),
-//          ContentScroll(
-//            images: movie.url,
-//            title: 'Screenshots',
-//            imageHeight: 200.0,
-//            imageWidth: 250.0,
-//          ),
+          Horizontal_scroll(images: movie,title: 'Filmes :',),
+          Horizontal_scroll(images: ova,title: 'Ova\'s :',),
+          Padding(padding: EdgeInsets.all(10))
+
+
         ],
       ),
     );
