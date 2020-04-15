@@ -40,6 +40,7 @@ class ContentScrollFavorite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: <Widget>[
         Padding(
@@ -89,7 +90,7 @@ class ContentScrollFavorite extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: HexColor('#2b2a2a'),
-                        offset: Offset(0.0, 2.0),
+                        offset: Offset(0.0, 1.0),
                         blurRadius: 3.0,
                       ),
                     ],

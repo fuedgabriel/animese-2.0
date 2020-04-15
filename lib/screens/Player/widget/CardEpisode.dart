@@ -16,17 +16,19 @@ class CardPlayer extends StatelessWidget {
   final int ep;
   final int id;
   VideoController vc;
+  String lanuage;
 
   CardPlayer({
     this.ep,
     this.id,
-    this.vc
+    this.vc,
+    this.lanuage
   });
 
   _launchURL(bool validador, int episode) async {
     String mp4;
 
-    ANIMES.Ep(id, episode, 'LEG').then((response){
+    ANIMES.Ep(id, episode, lanuage).then((response){
       final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
       if(ep.linkHd == true){
         ANIMES.PlayerUrl(ep.id, 'HD').then((response) async{

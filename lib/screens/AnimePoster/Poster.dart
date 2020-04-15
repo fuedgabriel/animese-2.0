@@ -1,6 +1,8 @@
 //widget
+import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
 import 'package:flutter/material.dart';
 import 'widget/circular_clipper.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 //Request
 import 'dart:convert';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
@@ -8,21 +10,15 @@ import 'package:animese/request/Request.dart';
 //Pages
 import 'package:animese/screens/Player/Player.dart';
 
+
 // ignore: must_be_immutable
 class Videoscreen extends StatefulWidget {
   final id;
   Videoscreen(this.id);
-  _VideoscreenState createState() => _VideoscreenState();
+  _VideoscreenState createState() => _VideoscreenState(id);
 }
 
 class _VideoscreenState extends State<Videoscreen> {
-
-  _VideoscreenState(){
-    print(widget.id);
-    _getDescription(widget.id);
-
-  }
-
   Color iconApp;
   Color nome = Colors.white;
   Color nomeTemp = Colors.white.withOpacity(0.6);
@@ -31,40 +27,51 @@ class _VideoscreenState extends State<Videoscreen> {
   IconData _obscureText = Icons.favorite_border;
   IconData __obscureText = Icons.favorite;
 
-  String temporada;
-  String categoria;
+  String urlImage = '';
+  String releases = 'Carregando....';
+  String season = 'Carregando...';
+  String category = 'Carregando';
+  String description = 'Carregando...';
+  String temp = 'Carregando...';
+  String status = 'Carregando';
+  String name = 'Carregando...';
+  String nameTemp = 'Carregando';
+  String espisodes = 'Carregando...';
+
   DescriptionJson movie;
 
+
+  _VideoscreenState(id){
+    _getDescription(id);
+  }
   _getDescription(id){
-    print('iddd');
-    print(id);
-    ANIMES.Description(widget.id).then((response){
-       movie = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
-      if(movie.numTemporada.toString() == ''){
-        temporada = '1º temporada';
-      }
-      else{
-        temporada = movie.numTemporada.toString();
-      }
-      for(int i = 0; i< movie.cat.length; i++){
-        categoria = categoria+', '+movie.cat[i].nome;
-      }
+    ANIMES.Description(id).then((response){
       setState(() {
-        temporada = temporada;
-        movie = movie;
-        categoria = categoria;
+        movie = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
+        if(movie.numTemporada.toString() == ''){
+          temp = '1º temporada';
+        }
+        else{
+          temp = movie.numTemporada.toString();
+        }
+        category = '';
+        for(int i = 0; i< movie.cat.length; i++){
+          category = category +', '+movie.cat[i].nome;
+        }
+        season = movie.temporada;
+        espisodes = movie.epLeg.toString();
+        releases = movie.lancamento;
+        urlImage = movie.capa;
+        description = movie.ds;
+        name = movie.nome;
+        nameTemp = movie.temporada;
+        status = movie.producao;
       });
     });
   }
-  @override
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -73,15 +80,24 @@ class _VideoscreenState extends State<Videoscreen> {
               Container(
                 transform: Matrix4.translationValues(0.0, -50.0, 0.0),
                 child: Hero(
-                  tag: movie.capa,
+                  tag: 'Animese',
                   child: ClipShadowPath(
                     clipper: CircularClipper(),
                     shadow: Shadow(blurRadius: 20.0),
-                    child: Image(
-                      height: 400.0,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      image: NetworkImage(movie.capa),
+                    child: CachedNetworkImage(
+                      imageUrl: urlImage,
+                      imageBuilder: (context, imageProvider) => Container(
+                        height: 400,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => Image(image: AssetImage('assets/imgs/loading.gif')),
+                      errorWidget: (context, url, error) => Image(image: AssetImage('assets/imgs/loading.gif')),
                     ),
                   ),
                 ),
@@ -122,17 +138,68 @@ class _VideoscreenState extends State<Videoscreen> {
                     elevation: 12.0,
                     onPressed: ()
                     {
-                      List btn = [movie.btnDub, movie.btnLeg];
-                      int ep = movie.epLeg;
-                      if(movie.epLeg == 0){
-                        movie.epDub = ep;
+                      int ep;
+                      if(movie.btnDub == true){
+                        showGeneralDialog(
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            transitionBuilder: (context, a1, a2, widget) {
+                              return Transform.scale(
+                                scale: a1.value,
+                                child: Opacity(
+                                  opacity: a1.value,
+                                  child: AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
+                                    ),
+                                    backgroundColor: HexColor('#212121'),
+                                    title: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        FlatButton(child: Text('Legendado', style: TextStyle(color: Colors.white),), onPressed: (){
+                                          ep = movie.epLeg;
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'LEG'),
+                                            ),
+                                          );
+                                        }),
+                                        FlatButton(child: Text('Dublado', style: TextStyle(color: Colors.white),),onPressed: (){
+                                          ep = movie.epDub;
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'DUB'),
+                                            ),
+                                          );
+                                        }),
+                                      ],
+                                    ),
+                                    ),
+                                  ),
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 200),
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            context: context,
+                            pageBuilder: (context, animation1, animation2) {var a; return a; });
+
+
                       }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlayerVideo(movie.id, movie.nome, ep),
-                        ),
-                      );
+                      else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlayerVideo(movie.id, movie.nome, ep, 'LEG'),
+                          ),
+                        );
+                      }
+
                     },
                     shape: CircleBorder(),
                     fillColor: Colors.black,
@@ -202,7 +269,7 @@ class _VideoscreenState extends State<Videoscreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  movie.nome.toUpperCase(),
+                  name,
                   style: TextStyle(
                     color: nome,
                     fontSize: 20.0,
@@ -212,7 +279,7 @@ class _VideoscreenState extends State<Videoscreen> {
                 ),
                 SizedBox(height: 2.0),
                 Text(
-                  movie.temporada.toUpperCase(),
+                  season.toUpperCase(),
                   style: TextStyle(
                     color: nomeTemp,
                     fontSize: 16.0,
@@ -220,7 +287,7 @@ class _VideoscreenState extends State<Videoscreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                Text(categoria.replaceRange(0, 2, ''),
+                Text(category.replaceRange(0, 2, ''),
                   style: TextStyle(
                     color: descriptionN,
                     fontSize: 16.0,
@@ -232,7 +299,7 @@ class _VideoscreenState extends State<Videoscreen> {
                   children: <Widget>[
                     Text('Status: ',
                       style: TextStyle(fontSize: 16, fontWeight:FontWeight.w500, color: descriptionN,),),
-                    Text(movie.producao,
+                    Text(status,
                       style: TextStyle(fontSize: 16, fontWeight:FontWeight.w700, color: descriptionD, ),),
                   ],
                 ),
@@ -252,7 +319,7 @@ class _VideoscreenState extends State<Videoscreen> {
                         ),
                         SizedBox(height: 10.0),
                         Text(
-                          movie.lancamento.substring(0,4),
+                          releases.substring(0,4),
                           style: TextStyle(
                             color: descriptionD,
                             fontSize: 20.0,
@@ -271,7 +338,7 @@ class _VideoscreenState extends State<Videoscreen> {
                           ),
                         ),
                         SizedBox(height: 10.0),
-                        Text('   '+movie.epLeg.toString(),
+                        Text(espisodes, //movie.epLeg.toString()
                           style: TextStyle(
                             color: descriptionD,
                             fontSize: 20.0,
@@ -291,7 +358,7 @@ class _VideoscreenState extends State<Videoscreen> {
                         ),
                         SizedBox(height: 10.0),
                         Text(
-                          temporada,
+                          temp,
                           style: TextStyle(
                             color: descriptionD,
                             fontSize: 20.0,
@@ -304,7 +371,7 @@ class _VideoscreenState extends State<Videoscreen> {
                 ),
                 SizedBox(height: 25.0),
                 Text(
-                  movie.ds,
+                  description,
                   style: TextStyle(
                       color: descriptionN
                   ),

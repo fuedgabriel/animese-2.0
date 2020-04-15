@@ -9,7 +9,8 @@ class PlayerVideo extends StatefulWidget {
   String nome;
   int id;
   int ep;
-  PlayerVideo(this.id, this.nome, this.ep);
+  String language;
+  PlayerVideo(this.id, this.nome, this.ep, this.language);
   @override
   _PlayerVideoState createState() => _PlayerVideoState();
 }
@@ -113,7 +114,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
               ],
             ),
           ),
-          CardPlayer(ep: widget.ep, id: widget.id ,vc: vc)
+          CardPlayer(ep: widget.ep, id: widget.id ,vc: vc, lanuage: widget.language,)
 
         ],
       ),
