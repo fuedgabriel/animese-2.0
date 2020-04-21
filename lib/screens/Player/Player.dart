@@ -3,7 +3,14 @@ import 'package:video_box/video.controller.dart';
 import 'package:video_box/video_box.dart';
 // import 'package:video_box/widgets/buffer_slider.dart';
 import 'package:video_player/video_player.dart';
+//widget
 import 'widget/CardEpisode.dart';
+//request
+import 'dart:convert';
+import 'package:animese/request/JSON/Episode/Episode.dart';
+import 'package:animese/request/JSON/Episode/Player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:animese/request/Request.dart';
 
 class PlayerVideo extends StatefulWidget {
   String nome;
@@ -17,11 +24,27 @@ class PlayerVideo extends StatefulWidget {
 
 class _PlayerVideoState extends State<PlayerVideo> {
   VideoController vc;
+  int epState;
 
   ScrollController controller = ScrollController();
+  Future _getViews() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(widget.id.toString());
+  }
+  _saveViews(ep) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(widget.id.toString(), ep);
+  }
+
   @override
   void initState() {
     super.initState();
+    _getViews().then((ep){
+      setState(() {
+        if(ep == null){epState = 0;}
+        else{epState = ep;}
+      });
+    });
     vc = VideoController(
       source: VideoPlayerController.network('https://docs.google.com/uc?export=download&id=1gd3n1knckqiI3FU4N_4db5oh13j3C2hN'),
       looping: false,
@@ -37,6 +60,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
         /*play end*/
       })
       ..initialize().then((_) {
+
         // initialized
       });
   }
@@ -99,7 +123,11 @@ class _PlayerVideoState extends State<PlayerVideo> {
                     iconSize: VideoBox.centerIconSize,
                     disabledColor: Colors.white60,
                     icon: Icon(Icons.skip_next),
-                    onPressed: () {},
+                    onPressed: () {
+                      _getViews().then((ep){
+                        PlayEpisode(ep+1);
+                      });
+                    },
                   ),
                 ),
                 Align(
@@ -108,16 +136,66 @@ class _PlayerVideoState extends State<PlayerVideo> {
                     iconSize: VideoBox.centerIconSize,
                     disabledColor: Colors.white60,
                     icon: Icon(Icons.skip_previous),
-                    onPressed: () {},
+                    onPressed: () {
+                      _getViews().then((ep){
+                        if(ep == 0){
+                          PlayEpisode(ep);
+                        }else{
+                          PlayEpisode(ep-1);
+                        }
+
+                      });
+                    },
                   ),
                 ),
               ],
             ),
           ),
-          CardPlayer(ep: widget.ep, id: widget.id ,vc: vc, lanuage: widget.language,)
+          CardPlayer(ep: widget.ep, epState: epState,id: widget.id ,vc: vc, lanuage: widget.language)
 
         ],
       ),
     );
+  }
+
+  PlayEpisode( int episode) async {
+    String mp4;
+    ANIMES.Ep(widget.id, episode, widget.language).then((response){
+      final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+      if(ep.linkHd == true){
+        ANIMES.PlayerUrl(ep.id, 'HD').then((response) async{
+          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+          mp4 = url.requestedMP4.url;
+          print(mp4);
+          vc.setSource(VideoPlayerController.network(mp4));
+          vc.initialize();
+          vc.play();
+        });
+      }
+      else if(ep.linkSd == true){
+        ANIMES.PlayerUrl(ep.id, 'SD').then((response) async{
+          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+          mp4 = url.requestedMP4.url;
+          print(mp4);
+          vc.setSource(VideoPlayerController.network(mp4));
+          vc.initialize();
+          vc.play();
+        });
+      }
+      else if(ep.linkBg == true){
+        ANIMES.PlayerUrl(ep.id, 'BG').then((response) async{
+          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+          mp4 = url.requestedMP4.url;
+          print(mp4);
+          vc.setSource(VideoPlayerController.network(mp4));
+          vc.initialize();
+          vc.play();
+        });
+      }
+      print('episódio');
+      print(episode);
+      _saveViews(episode);
+    });
+
   }
 }

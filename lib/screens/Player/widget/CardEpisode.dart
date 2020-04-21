@@ -5,29 +5,44 @@ import 'package:animese/request/Request.dart';
 import 'package:animese/request/JSON/Episode/Episode.dart';
 import 'package:animese/request/JSON/Episode/Player.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 //Player
 import 'package:video_box/video.controller.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
+
+
 // ignore: must_be_immutable
-class CardPlayer extends StatelessWidget {
+class CardPlayer  extends StatelessWidget{
   final int ep;
+  final int epState;
   final int id;
   VideoController vc;
-  String lanuage;
+  final String lanuage;
+
 
   CardPlayer({
     this.ep,
+    this.epState,
     this.id,
     this.vc,
     this.lanuage
   });
+  
+  Color cardColor;
+  IconData visibility;
+
+  
+
+  _saveViews(ep) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(id.toString(), ep);
+  }
 
   _launchURL(bool validador, int episode) async {
     String mp4;
-
     ANIMES.Ep(id, episode, lanuage).then((response){
       final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
       if(ep.linkHd == true){
@@ -60,13 +75,14 @@ class CardPlayer extends StatelessWidget {
           vc.play();
         });
       }
-
+      print('episódio');
+      print(episode);
+      _saveViews(episode);
     });
 
   }
 
   Widget build(BuildContext context) {
-
     return Container(
       height: MediaQuery.of(context).size.height+100,
       alignment: Alignment.bottomLeft,
@@ -75,8 +91,17 @@ class CardPlayer extends StatelessWidget {
         itemCount: ep,
         padding: EdgeInsets.only(bottom: 330),
         itemBuilder: (BuildContext context, int index) {
+          if(index < epState){
+            cardColor = Colors.white.withOpacity(0.6);
+            visibility = Icons.visibility_off;
+          }
+          else{
+            cardColor = Colors.white;
+            visibility = Icons.visibility;
+          }
+
           return Card(
-            color: Colors.white,
+            color: cardColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -88,19 +113,34 @@ class CardPlayer extends StatelessWidget {
                   onPressed: (){_launchURL(false, (index+1));},
                 ),
                 Text('Episódio '+(index+1).toString()),
-                Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.12)),
+                Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.07)),
                 FlatButton(
                   child: Text('Externo',
                     style: TextStyle(
                         fontWeight: FontWeight.w400
                     ),
                   ),
-                  onPressed: (){_launchURL(true, (index+1));},
+                  onPressed: (){
+//                    _launchURL(true, (index+1));
+                  },
                 ),
                 IconButton(
                   icon: Icon(Icons.file_download, color: Colors.red,size: 32,),
                   color: Colors.black26,
-                  onPressed: (){},
+                  onPressed: (){
+//                    print(epState);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(visibility, color: Colors.red,size: 32,),
+                  color: Colors.black26,
+                  onPressed: (){
+                    if(visibility == Icons.visibility){
+                      _saveViews(index+1);
+                    }else{
+                      _saveViews(index);
+                    }
+                  },
                 ),
               ],
             ),

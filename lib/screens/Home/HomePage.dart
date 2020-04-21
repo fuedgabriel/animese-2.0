@@ -1,6 +1,4 @@
 //Request
-import 'dart:async';
-
 import 'package:animese/request/Request.dart';
 import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,6 +45,7 @@ class _HomePage extends State<HomePage> {
   _HomePage(){
     _recentAnimes();
     _getHome();
+    _stateFavorite();
   }
 
   _getHome(){
@@ -67,8 +66,39 @@ class _HomePage extends State<HomePage> {
         ultimosOvas = listaUO.map((model) => AnimeListJson.fromJson(model)).toList();
       });
     });
-
   }
+
+  var anime = List<DescriptionJson>();
+  var animeNulo = List<DescriptionJson>();
+  DescriptionJson FavoriteAnime;
+
+  Future _stateFavorite()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> favorite = prefs.getStringList('favorite');
+    for(int i = 0;i < favorite.length; i++){
+      print(favorite[i]);
+      ANIMES.Description(int.parse(favorite[i])).then((response){
+        setState(() {
+          anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));
+        });
+      });
+    }
+  }
+
+//  buildContainer() {
+//    return Container(
+//        child: FutureBuilder(
+//            future: _stateFavorite(),
+//            builder: (context, snapshot) {
+//              if (snapshot.hasData) {
+//                return ContenScrollFavorite(anime,'Favoritos', MediaQuery.of(context).size.width*0.41, MediaQuery.of(context).size.height*0.36,);
+//              } else {
+//                return Center(
+//                  child: CircularProgressIndicator(),
+//                );
+//              }
+//            }));
+//  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,12 +120,13 @@ class _HomePage extends State<HomePage> {
       body: ListView(
         children: <Widget>[
           Padding(padding: EdgeInsets.only(bottom: 10)),
-          ContentScrollFavorite(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScrollFavorite(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScrollFavorite(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScrollFavorite(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScrollFavorite(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScrollFavorite(images: ultimosOvas, title: 'Últimos Ova\'s', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContenScrollFavorite(anime,'Favoritos', MediaQuery.of(context).size.width*0.41, MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: ultimosOvas, title: 'Últimos Ova\'s', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
 
         ],
       ),

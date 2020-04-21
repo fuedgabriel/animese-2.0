@@ -11,6 +11,7 @@ import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 import 'dart:convert';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 import 'package:animese/request/Request.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //Pages
 import 'package:animese/screens/Player/Player.dart';
 
@@ -28,8 +29,7 @@ class _VideoscreenState extends State<Videoscreen> {
   Color nomeTemp = Colors.white.withOpacity(0.6);
   Color descriptionN = Colors.white70;
   Color descriptionD = Colors.white54;
-  IconData _obscureText = Icons.favorite_border;
-  IconData __obscureText = Icons.favorite;
+
 
   String urlImage = '';
   String releases = '.....';
@@ -45,9 +45,54 @@ class _VideoscreenState extends State<Videoscreen> {
   var ova = List<LittleListAnimeJson>();
   var movie = List<LittleListAnimeJson>();
 
+  IconData favoriteIcon = Icons.favorite_border;
+
+  _saveFavorite() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> favoritos = prefs.getStringList('favorite');
+    if(favoritos == null){ favoritos = [];}
+    favoritos.add(widget.id.toString());
+    prefs.setStringList('favorite', favoritos);
+  }
+
+  _removeFavorite() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> favoritos = prefs.getStringList('favorite');
+    favoritos.remove(widget.id.toString());
+    prefs.setStringList('favorite', favoritos);
+  }
+
+  _stateFavorite()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> favorite = prefs.getStringList('favorite');
+    if(favorite == null){
+      favorite = [];
+    }
+    else if(favorite.contains(widget.id.toString())== true) {
+      setState(() {
+        favoriteIcon = Icons.favorite;
+      });
+    }
+  }
+
+
+  void _favorite() {
+    setState(() {
+      if(favoriteIcon == Icons.favorite_border){
+        favoriteIcon = Icons.favorite;
+        _saveFavorite();
+      }
+      else{
+        favoriteIcon = Icons.favorite_border;
+        _removeFavorite();
+      }
+    });
+  }
+
 
   _VideoscreenState(id){
     _getDescription(id);
+    _stateFavorite();
   }
   _getDescription(id){
     ANIMES.Description(id).then((response){
@@ -125,12 +170,12 @@ class _VideoscreenState extends State<Videoscreen> {
                     width: MediaQuery.of(context).size.width * 0.7,
                   ),
                   IconButton(
-                    icon: Icon(_obscureText),
+                    icon: Icon(favoriteIcon),
                     iconSize: 30.0,
                     color: Colors.red,
                     onPressed: ()
                     {
-
+                      _favorite();
                     },
 
                   ),
@@ -222,8 +267,8 @@ class _VideoscreenState extends State<Videoscreen> {
                 bottom: 0.0,
                 left: 20.0,
                 child: IconButton(
-                  onPressed: () =>{
-
+                  onPressed: () {
+                    _stateFavorite();
                   },
                   icon: Icon(Icons.assistant_photo),
                   iconSize: 35.0,

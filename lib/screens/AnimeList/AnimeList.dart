@@ -45,9 +45,7 @@ class _AnimesListState extends State<AnimesList> {
     controller.addListener(() {
       if(mounted) {
         if(controller.position.pixels == controller.position.maxScrollExtent){
-          print(pag);
           pag = pag +1;
-          print(pag);
           _get(pag);
         }
       }

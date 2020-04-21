@@ -1,5 +1,6 @@
 //Request
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/Request.dart';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 import 'dart:convert';
@@ -10,23 +11,21 @@ import 'package:animese/widgets/HexColor.dart';
 //pages
 import 'package:animese/screens/AnimePoster/Poster.dart';
 import 'package:animese/screens/AnimeList/AnimeListSimple.dart';
+import 'package:animese/screens/AnimeList/AnimeListFavorite.dart';
 
 
-
-
-class ContentScrollFavorite extends StatelessWidget {
+class ContentScroll extends StatelessWidget {
   final List<AnimeListJson> images;
   final String title;
   final double imageHeight;
   final double imageWidth;
 
-  ContentScrollFavorite({
+  ContentScroll({
     this.images,
     this.title,
     this.imageHeight,
     this.imageWidth,
   });
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,4 +120,128 @@ class ContentScrollFavorite extends StatelessWidget {
     );
   }
 }
+
+
+class ContenScrollFavorite extends StatefulWidget {
+  @override
+  List<DescriptionJson> anime;
+  final String Title;
+  final double imageHeight;
+  final double imageWidth;
+  ContenScrollFavorite(
+      this.anime,
+      this.Title,
+      this.imageWidth,
+      this.imageHeight
+      );
+
+  _ContenScrollFavoriteState createState() => _ContenScrollFavoriteState();
+}
+
+class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    if(widget.anime.length == 0){
+      return Container();
+    }
+    else{
+      return Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  widget.Title,
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+//                    List id;
+//                    List name;
+//                    List capa;
+//                  id.addAll(widget.anime.map((f) => f.id).toList());
+//                  name.addAll(widget.anime.map((f) => f.nome).toList());
+//                  capa.addAll(widget.anime.map((f) => f.capa).toList());
+//                  print(name);
+//                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnimeListFavorite(id, name, capa, widget.Title),),);
+                  },
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 30.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: widget.imageHeight,
+            width: double.infinity,
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.anime.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  child:  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 20.0,
+                    ),
+                    width: widget.imageWidth,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: HexColor('#2b2a2a'),
+                          offset: Offset(0.0, 1.0),
+                          blurRadius: 3.0,
+                        ),
+                      ],
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Videoscreen(widget.anime[index].id),
+                        ),
+                      );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.anime[index].capa,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
+                          errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.black87,),),
+                        ),
+                      ),
+
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }
+  }
+}
+
 
