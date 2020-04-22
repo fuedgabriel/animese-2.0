@@ -11,6 +11,8 @@ import 'dart:convert';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 import 'package:animese/request/Request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:animese/request/JSON/Episode/Episode.dart';
+
 //Pages
 import 'package:animese/screens/Player/Player.dart';
 
@@ -121,6 +123,8 @@ class _VideoscreenState extends State<Videoscreen> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,7 +194,7 @@ class _VideoscreenState extends State<Videoscreen> {
                     onPressed: ()
                     {
                       int ep;
-                      if(anime.btnDub == true){
+                      if(anime.btnDub == true || anime.btnLeg == true){
                         showGeneralDialog(
                             barrierColor: Colors.black.withOpacity(0.5),
                             transitionBuilder: (context, a1, a2, widget) {
@@ -209,26 +213,50 @@ class _VideoscreenState extends State<Videoscreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         FlatButton(child: Text('Legendado', style: TextStyle(color: Colors.white),), onPressed: (){
+                                          episodesVal episode;
+                                          List<String> quality = [];
+                                          ANIMES.Ep(anime.id, 1, 'LEG').then((response){
+                                            setState(() {
+                                              episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+                                              if(episode.linkHd == true){
+                                                quality.add('HD - 720p');
+                                              }
+                                              if(episode.linkSd == true){
+                                                quality.add('SD - 480p');
+                                              }
+                                              if(episode.linkBg == true){
+                                                quality.add('BG - 360p');
+                                              }
+                                              print('ado ado');
+                                              print(quality);
+                                            });
+                                          });
                                           ep = anime.epLeg;
-                                          print(ep);
                                           Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG'),
-                                            ),
-                                          );
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
                                         }),
                                         FlatButton(child: Text('Dublado', style: TextStyle(color: Colors.white),),onPressed: (){
+                                          episodesVal episode;
+                                          List<String> quality = [];
+                                          ANIMES.Ep(anime.id, 1, 'DUB').then((response){
+                                            setState(() {
+                                              episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+                                              if(episode.linkHd == true){
+                                                quality.add('HD - 720p');
+                                              }
+                                              if(episode.linkSd == true){
+                                                quality.add('SD - 480p');
+                                              }
+                                              if(episode.linkBg == true){
+                                                quality.add('BG - 360p');
+                                              }
+                                              print('ado ado');
+                                              print(quality);
+                                            });
+                                          });
                                           ep = anime.epDub;
-                                          print(ep);
                                           Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB'),
-                                            ),
-                                          );
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
                                         }),
                                       ],
                                     ),
@@ -243,53 +271,35 @@ class _VideoscreenState extends State<Videoscreen> {
                             pageBuilder: (context, animation1, animation2) {var a; return a; });
                       }
                       else{
-                        if(anime.epDub != 0){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlayerVideo(anime.id, anime.nome, anime.epDub, 'LEG'),
-                            ),
-                          );
-                        }
-                        else if(anime.epLeg != 0){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PlayerVideo(anime.id, anime.nome, anime.epLeg, 'DUB'),
-                            ),
-                          );
-                        }
-                        else{
-                          showGeneralDialog(
-                              barrierColor: Colors.black.withOpacity(0.5),
-                              transitionBuilder: (context, a1, a2, widget) {
-                                return Transform.scale(
-                                  scale: a1.value,
-                                  child: Opacity(
-                                    opacity: a1.value,
-                                    child: AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
-                                      ),
-                                      backgroundColor: HexColor('#212121'),
-                                      title: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text('Nenhum episódio disponível')
-                                        ],
-                                      ),
+                        showGeneralDialog(
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            transitionBuilder: (context, a1, a2, widget) {
+                              return Transform.scale(
+                                scale: a1.value,
+                                child: Opacity(
+                                  opacity: a1.value,
+                                  child: AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
+                                    ),
+                                    backgroundColor: HexColor('#212121'),
+                                    title: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text('Nenhum episódio disponível')
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                              transitionDuration: Duration(milliseconds: 200),
-                              barrierDismissible: true,
-                              barrierLabel: '',
-                              context: context,
-                              pageBuilder: (context, animation1, animation2) {var a; return a; });
-                        }
+                                ),
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 200),
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            context: context,
+                            pageBuilder: (context, animation1, animation2) {var a; return a; });
                       }
                     },
                     shape: CircleBorder(),
@@ -473,8 +483,6 @@ class _VideoscreenState extends State<Videoscreen> {
           Horizontal_scroll(images: movie,title: 'Filmes :',),
           Horizontal_scroll(images: ova,title: 'Ova\'s :',),
           Padding(padding: EdgeInsets.all(10))
-
-
         ],
       ),
     );

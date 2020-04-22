@@ -17,7 +17,8 @@ class PlayerVideo extends StatefulWidget {
   int id;
   int epi;
   String language;
-  PlayerVideo(this.id, this.nome, this.epi, this.language);
+  List<String> quality;
+  PlayerVideo(this.id, this.nome, this.epi, this.language, this.quality);
   @override
   _PlayerVideoState createState() => _PlayerVideoState();
 }
@@ -25,6 +26,7 @@ class PlayerVideo extends StatefulWidget {
 class _PlayerVideoState extends State<PlayerVideo> {
   VideoController vc;
   int epState;
+
 
   ScrollController controller = ScrollController();
   Future _getViews() async {
@@ -60,6 +62,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
         /*play end*/
       })
       ..initialize().then((_) {
+
 
         // initialized
       });
@@ -111,11 +114,39 @@ class _PlayerVideoState extends State<PlayerVideo> {
                 ),
                 Align(
                   alignment: Alignment((MediaQuery.of(context).size.height * 0.0015), (MediaQuery.of(context).size.width * 0.0025)*-1),
-                    child: Image(
-                      height: 32,
-                      width: 32,
-                      image: AssetImage('assets/logo/Icon.png'),
-                    ),
+                    child: DropdownButton<String>(
+                      icon: Icon(Icons.settings,color: Colors.white,),
+                      style: TextStyle(color: Colors.deepPurple),
+                      underline: Container(color: Colors.transparent,),
+                      onChanged: (String newValue) {
+
+                      },
+                      items: widget.quality.map<DropdownMenuItem<String>>((String value) {
+                        print('aaaaaaaaaaaaaaaaaa');
+                        print(widget.quality);
+                        print(value);
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: GestureDetector(
+                            child: Text(value),
+                            onTap: (){
+                              _getViews().then((ep){
+                                print( value.substring(0,2));
+                                ChangeQuality(ep,'HD');
+                              });
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    )
+                ),
+                Align(
+                  alignment: Alignment((MediaQuery.of(context).size.height * 0.00115), (MediaQuery.of(context).size.width * 0.0025)*-1),
+                  child: Image(
+                    height: 32,
+                    width: 32,
+                    image: AssetImage('assets/logo/Icon.png'),
+                  ),
                 ),
                 Align(
                   alignment: Alignment(0.5, 0),
@@ -194,6 +225,22 @@ class _PlayerVideoState extends State<PlayerVideo> {
       }
       print('episódio');
       print(episode);
+      _saveViews(episode);
+    });
+
+  }
+  ChangeQuality(int episode, quality) async {
+    String mp4;
+    ANIMES.Ep(widget.id, episode, widget.language).then((response){
+      final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+      ANIMES.PlayerUrl(ep.id, quality).then((response) async{
+        final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+        mp4 = url.requestedMP4.url;
+        print(mp4);
+        vc.setSource(VideoPlayerController.network(mp4));
+        vc.initialize();
+        vc.play();
+      });
       _saveViews(episode);
     });
 

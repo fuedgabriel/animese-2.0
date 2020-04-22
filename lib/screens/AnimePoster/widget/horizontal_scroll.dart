@@ -77,7 +77,7 @@ class Horizontal_scroll extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                              builder: (context) => PlayerVideo(images[index].id, images[index].nome, 1, 'LEG'),
+                              builder: (context) => PlayerVideo(images[index].id, images[index].nome, 1, 'LEG', ['HD']),
                           ),);
                         },
                       ),

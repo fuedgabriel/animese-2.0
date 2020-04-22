@@ -132,6 +132,7 @@ class ContenScrollFavorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(anime.length == 0){
+      return Container();
 
     }
     else{
