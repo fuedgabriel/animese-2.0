@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animese/widgets/HexColor.dart';
 import 'widget/horizontal_scroll.dart';
-import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
 import 'widget/circular_clipper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //Request

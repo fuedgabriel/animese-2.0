@@ -138,35 +138,7 @@ class ContentScrollFavorite extends StatelessWidget {
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10.0),
-                              child: CachedNetworkImage(
-                                imageUrl: anime[index].capa,
-                                imageBuilder: (context, imageProvider) => Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                placeholder: (context, url) => Image(image: AssetImage('assets/imgs/loading.gif')),
-                                errorWidget: (context, url, error) => Image(image: AssetImage('assets/imgs/loading.gif')),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 5.0,
-                          right: 5.0,
-                          bottom: 5.0,
-                          child: Container(
-                            width: 250.0,
-                            child: Text(
-                              anime[index].nome.toUpperCase(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              child: Image.asset('assets/imgs/loading.gif'),
                             ),
                           ),
                         ),

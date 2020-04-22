@@ -21,14 +21,19 @@ class _AnimeListFavoriteState extends State<AnimeListFavorite> {
   Future _stateFavorite()async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     favorite = prefs.getStringList('favorite');
-    for(int i = 0;i < favorite.length; i++){
-      ANIMES.Description(int.parse(favorite[i])).then((response){
-        setState(() {
-          favorite = favorite;
-          anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));
+    if(favorite == null ){
+
+    }else{
+      for(int i = 0;i < favorite.length; i++){
+        ANIMES.Description(int.parse(favorite[i])).then((response){
+          setState(() {
+            favorite = favorite;
+            anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));
+          });
         });
-      });
+      }
     }
+
   }
 
   @override

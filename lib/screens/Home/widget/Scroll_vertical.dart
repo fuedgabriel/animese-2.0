@@ -1,17 +1,12 @@
 //Request
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:animese/request/Request.dart';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
-import 'dart:convert';
 //widget
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:animese/widgets/HexColor.dart';
 //pages
 import 'package:animese/screens/AnimePoster/Poster.dart';
 import 'package:animese/screens/AnimeList/AnimeListSimple.dart';
-import 'package:animese/screens/AnimeList/AnimeListFavorite.dart';
 
 
 class ContentScroll extends StatelessWidget {
@@ -121,30 +116,23 @@ class ContentScroll extends StatelessWidget {
   }
 }
 
-
-class ContenScrollFavorite extends StatefulWidget {
-  @override
+class ContenScrollFavorite extends StatelessWidget {
   List<DescriptionJson> anime;
+  List<String> favorite;
   final String Title;
   final double imageHeight;
   final double imageWidth;
-  ContenScrollFavorite(
-      this.anime,
-      this.Title,
-      this.imageWidth,
-      this.imageHeight
-      );
-
-  _ContenScrollFavoriteState createState() => _ContenScrollFavoriteState();
-}
-
-class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
-
-
+  ContenScrollFavorite({
+    this.anime,
+    this.favorite,
+    this.Title,
+    this.imageWidth,
+    this.imageHeight
+  });
   @override
   Widget build(BuildContext context) {
-    if(widget.anime.length == 0){
-      return Container();
+    if(anime.length == 0){
+
     }
     else{
       return Column(
@@ -155,7 +143,7 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  widget.Title,
+                  Title,
                   style: TextStyle(
                       fontSize: 20.0,
                       color: Colors.white
@@ -175,15 +163,34 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
             ),
           ),
           Container(
-            height: widget.imageHeight,
+            height: imageHeight,
             width: double.infinity,
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 30.0),
               scrollDirection: Axis.horizontal,
-              itemCount: widget.anime.length,
+              itemCount: anime.length,
               itemBuilder: (BuildContext context, int index) {
-                if(widget.anime[index].capa == null){
-                  return Container();
+                if(anime[index].capa == null){
+                  return Container(
+                    child:  Container(
+                      width: imageWidth,
+                      padding: EdgeInsets.all(5),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Videoscreen(favorite[index]),
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.asset('assets/imgs/loading.gif'),
+                        ),
+                      ),
+                    ),
+                  );
                 }
                 else{
                   return Container(
@@ -192,7 +199,7 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
 //                      horizontal: 10.0,
 //                      vertical: 20.0,
 //                    ),
-                      width: widget.imageWidth,
+                      width: imageWidth,
 //                    decoration: BoxDecoration(
 //                      borderRadius: BorderRadius.circular(10.0),
 //                      boxShadow: [
@@ -208,14 +215,14 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Videoscreen(widget.anime[index].id),
+                              builder: (context) => Videoscreen(anime[index].id),
                             ),
                           );
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: CachedNetworkImage(
-                            imageUrl: widget.anime[index].capa,
+                            imageUrl: anime[index].capa,
                             imageBuilder: (context, imageProvider) => Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
@@ -240,5 +247,22 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
     }
   }
 }
+
+
+//class ContenScrollFavorite extends StatefulWidget {
+//  @override
+//
+//  ContenScrollFavorite(
+//
+//      );
+//
+//  _ContenScrollFavoriteState createState() => _ContenScrollFavoriteState();
+//}
+//
+//class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
+//
+//  @override
+//
+//}
 
 

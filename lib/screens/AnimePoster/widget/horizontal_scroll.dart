@@ -1,7 +1,6 @@
 //Request
 import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 //widget
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';

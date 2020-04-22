@@ -69,12 +69,14 @@ class _HomePage extends State<HomePage> {
   }
 
   var anime = List<DescriptionJson>();
+  List<String> favorite;
   Future _stateFavorite()async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favorite = prefs.getStringList('favorite');
+    favorite = prefs.getStringList('favorite');
     for(int i = 0;i < favorite.length; i++){
       ANIMES.Description(int.parse(favorite[i])).then((response){
         setState(() {
+          favorite = favorite;
           anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));
         });
       });
@@ -119,7 +121,7 @@ class _HomePage extends State<HomePage> {
           ContentScroll(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
           ContentScroll(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
           ContentScroll(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContenScrollFavorite(anime,'Favoritos', MediaQuery.of(context).size.width*0.41, MediaQuery.of(context).size.height*0.36,),
+          ContenScrollFavorite(anime: anime, favorite: favorite, Title: 'Favoritos', imageWidth: MediaQuery.of(context).size.width*0.41,imageHeight: MediaQuery.of(context).size.height*0.36,),
           ContentScroll(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
           ContentScroll(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
           ContentScroll(images: ultimosOvas, title: 'Últimos Ova\'s', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
