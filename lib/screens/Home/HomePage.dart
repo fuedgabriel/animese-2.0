@@ -69,14 +69,10 @@ class _HomePage extends State<HomePage> {
   }
 
   var anime = List<DescriptionJson>();
-  var animeNulo = List<DescriptionJson>();
-  DescriptionJson FavoriteAnime;
-
   Future _stateFavorite()async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> favorite = prefs.getStringList('favorite');
     for(int i = 0;i < favorite.length; i++){
-      print(favorite[i]);
       ANIMES.Description(int.parse(favorite[i])).then((response){
         setState(() {
           anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));

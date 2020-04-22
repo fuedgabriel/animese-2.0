@@ -211,6 +211,7 @@ class _VideoscreenState extends State<Videoscreen> {
                                       children: <Widget>[
                                         FlatButton(child: Text('Legendado', style: TextStyle(color: Colors.white),), onPressed: (){
                                           ep = anime.epLeg;
+                                          print(ep);
                                           Navigator.pop(context);
                                           Navigator.push(
                                             context,
@@ -221,6 +222,7 @@ class _VideoscreenState extends State<Videoscreen> {
                                         }),
                                         FlatButton(child: Text('Dublado', style: TextStyle(color: Colors.white),),onPressed: (){
                                           ep = anime.epDub;
+                                          print(ep);
                                           Navigator.pop(context);
                                           Navigator.push(
                                             context,
@@ -240,18 +242,56 @@ class _VideoscreenState extends State<Videoscreen> {
                             barrierLabel: '',
                             context: context,
                             pageBuilder: (context, animation1, animation2) {var a; return a; });
-
-
                       }
                       else{
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG'),
-                          ),
-                        );
+                        if(anime.epDub != 0){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlayerVideo(anime.id, anime.nome, anime.epDub, 'LEG'),
+                            ),
+                          );
+                        }
+                        else if(anime.epLeg != 0){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlayerVideo(anime.id, anime.nome, anime.epLeg, 'DUB'),
+                            ),
+                          );
+                        }
+                        else{
+                          showGeneralDialog(
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              transitionBuilder: (context, a1, a2, widget) {
+                                return Transform.scale(
+                                  scale: a1.value,
+                                  child: Opacity(
+                                    opacity: a1.value,
+                                    child: AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
+                                      ),
+                                      backgroundColor: HexColor('#212121'),
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text('Nenhum episódio disponível')
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 200),
+                              barrierDismissible: true,
+                              barrierLabel: '',
+                              context: context,
+                              pageBuilder: (context, animation1, animation2) {var a; return a; });
+                        }
                       }
-
                     },
                     shape: CircleBorder(),
                     fillColor: Colors.black,

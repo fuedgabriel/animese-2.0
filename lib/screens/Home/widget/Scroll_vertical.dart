@@ -69,21 +69,21 @@ class ContentScroll extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 child:  Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 20.0,
-                  ),
+//                  margin: EdgeInsets.symmetric(
+//                    horizontal: 2.0,
+//                    vertical: 5.0,
+//                  ),
                   width: imageWidth,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: HexColor('#2b2a2a'),
-                        offset: Offset(0.0, 1.0),
-                        blurRadius: 3.0,
-                      ),
-                    ],
-                  ),
+//                  decoration: BoxDecoration(
+//                    borderRadius: BorderRadius.circular(10.0),
+//                    boxShadow: [
+//                      BoxShadow(
+//                        color: HexColor('#2b2a2a'),
+//                        offset: Offset(0.0, 1.0),
+//                        blurRadius: 3.0,
+//                      ),
+//                    ],
+//                  ),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -163,14 +163,7 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
                 ),
                 GestureDetector(
                   onTap: () {
-//                    List id;
-//                    List name;
-//                    List capa;
-//                  id.addAll(widget.anime.map((f) => f.id).toList());
-//                  name.addAll(widget.anime.map((f) => f.nome).toList());
-//                  capa.addAll(widget.anime.map((f) => f.capa).toList());
-//                  print(name);
-//                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnimeListFavorite(id, name, capa, widget.Title),),);
+                    Navigator.of(context).pushNamed('/AnimeListFavorite');
                   },
                   child: Icon(
                     Icons.arrow_forward,
@@ -189,52 +182,56 @@ class _ContenScrollFavoriteState extends State<ContenScrollFavorite> {
               scrollDirection: Axis.horizontal,
               itemCount: widget.anime.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child:  Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 20.0,
-                    ),
-                    width: widget.imageWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: HexColor('#2b2a2a'),
-                          offset: Offset(0.0, 1.0),
-                          blurRadius: 3.0,
-                        ),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Videoscreen(widget.anime[index].id),
-                        ),
-                      );
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.anime[index].capa,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.contain,
+                if(widget.anime[index].capa == null){
+                  return Container();
+                }
+                else{
+                  return Container(
+                    child:  Container(
+//                    margin: EdgeInsets.symmetric(
+//                      horizontal: 10.0,
+//                      vertical: 20.0,
+//                    ),
+                      width: widget.imageWidth,
+//                    decoration: BoxDecoration(
+//                      borderRadius: BorderRadius.circular(10.0),
+//                      boxShadow: [
+//                        BoxShadow(
+//                          color: HexColor('#2b2a2a'),
+//                          offset: Offset(0.0, 1.0),
+//                          blurRadius: 3.0,
+//                        ),
+//                      ],
+//                    ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Videoscreen(widget.anime[index].id),
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.anime[index].capa,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
+                            placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
+                            errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.black87,),),
                           ),
-                          placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
-                          errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.black87,),),
                         ),
                       ),
-
                     ),
-                  ),
-                );
+                  );
+                }
               },
             ),
           ),

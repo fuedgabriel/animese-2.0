@@ -15,9 +15,9 @@ import 'package:animese/request/Request.dart';
 class PlayerVideo extends StatefulWidget {
   String nome;
   int id;
-  int ep;
+  int epi;
   String language;
-  PlayerVideo(this.id, this.nome, this.ep, this.language);
+  PlayerVideo(this.id, this.nome, this.epi, this.language);
   @override
   _PlayerVideoState createState() => _PlayerVideoState();
 }
@@ -151,7 +151,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
               ],
             ),
           ),
-          CardPlayer(ep: widget.ep, epState: epState,id: widget.id ,vc: vc, lanuage: widget.language)
+          CardPlayer(ep: widget.epi, epState: epState,id: widget.id ,vc: vc, lanuage: widget.language)
 
         ],
       ),
