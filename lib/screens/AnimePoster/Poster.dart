@@ -227,13 +227,12 @@ class _VideoscreenState extends State<Videoscreen> {
                                               if(episode.linkBg == true){
                                                 quality.add('BG - 360p');
                                               }
-                                              print('ado ado');
-                                              print(quality);
+                                              ep = anime.epLeg;
+                                              Navigator.pop(context);
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
                                             });
                                           });
-                                          ep = anime.epLeg;
-                                          Navigator.pop(context);
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
+
                                         }),
                                         FlatButton(child: Text('Dublado', style: TextStyle(color: Colors.white),),onPressed: (){
                                           episodesVal episode;

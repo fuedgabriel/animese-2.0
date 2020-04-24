@@ -91,15 +91,16 @@ class CardPlayer  extends StatelessWidget{
         itemCount: ep,
         padding: EdgeInsets.only(bottom: 330),
         itemBuilder: (BuildContext context, int index) {
-          if(index < epState){
-            cardColor = Colors.white.withOpacity(0.6);
-            visibility = Icons.visibility_off;
+          if(epState != null){
+            if(index < epState){
+              cardColor = Colors.white.withOpacity(0.6);
+              visibility = Icons.visibility_off;
+            }
+            else{
+              cardColor = Colors.white;
+              visibility = Icons.visibility;
+            }
           }
-          else{
-            cardColor = Colors.white;
-            visibility = Icons.visibility;
-          }
-
           return Card(
             color: cardColor,
             child: Row(

@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/Request.dart';
 
 class PlayerVideo extends StatefulWidget {
+
   String nome;
   int id;
   int epi;
@@ -26,6 +27,7 @@ class PlayerVideo extends StatefulWidget {
 class _PlayerVideoState extends State<PlayerVideo> {
   VideoController vc;
   int epState;
+
 
 
   ScrollController controller = ScrollController();
@@ -119,21 +121,21 @@ class _PlayerVideoState extends State<PlayerVideo> {
                       style: TextStyle(color: Colors.deepPurple),
                       underline: Container(color: Colors.transparent,),
                       onChanged: (String newValue) {
-
                       },
                       items: widget.quality.map<DropdownMenuItem<String>>((String value) {
-                        print('aaaaaaaaaaaaaaaaaa');
-                        print(widget.quality);
-                        print(value);
                         return DropdownMenuItem<String>(
                           value: value,
                           child: GestureDetector(
                             child: Text(value),
                             onTap: (){
-                              _getViews().then((ep){
-                                print( value.substring(0,2));
-                                ChangeQuality(ep,'HD');
-                              });
+                              try {
+                                _getViews().then((ep){
+                                  print( value.substring(0,2));
+                                  ChangeQuality(ep,'HD');
+                                });
+                              } on Exception catch (_) {
+
+                              }
                             },
                           ),
                         );
@@ -155,6 +157,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
                     disabledColor: Colors.white60,
                     icon: Icon(Icons.skip_next),
                     onPressed: () {
+
                       _getViews().then((ep){
                         PlayEpisode(ep+1);
                       });
