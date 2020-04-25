@@ -13,6 +13,8 @@ import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
 
 
 class AnimesList extends StatefulWidget {
+  String list;
+  AnimesList(this.list);
   @override
   _AnimesListState createState() => _AnimesListState();
 }
@@ -24,14 +26,33 @@ class _AnimesListState extends State<AnimesList> {
   var controller = ScrollController();
 
 
-  _get(int pag){
+  _getListAnime(int pag){
     ANIMES.AnimeList(pag).then((response){
       setState(() {
         Map decoded = json.decode(response.body);
         Iterable lista = decoded['animes']['animes'];
         list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
         animes.addAll(list.map((f) => f).toList());
-
+      });
+    });
+  }
+  _getListFilmes(int pag){
+    ANIMES.MovieList(pag).then((response){
+      setState(() {
+        Map decoded = json.decode(response.body);
+        Iterable lista = decoded['filmes']['filmes'];
+        list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
+        animes.addAll(list.map((f) => f).toList());
+      });
+    });
+  }
+  _getListOvas(int pag){
+    ANIMES.OvaList(pag).then((response){
+      setState(() {
+        Map decoded = json.decode(response.body);
+        Iterable lista = decoded['ovas']['ovas'];
+        list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
+        animes.addAll(list.map((f) => f).toList());
       });
     });
   }
@@ -46,12 +67,28 @@ class _AnimesListState extends State<AnimesList> {
       if(mounted) {
         if(controller.position.pixels == controller.position.maxScrollExtent){
           pag = pag +1;
-          _get(pag);
+          if(widget.list == 'Animes'){
+            _getListAnime(pag);
+          }
+          else if(widget.list == 'Filmes'){
+            _getListFilmes(pag);
+          }
+          else{
+            _getListOvas(pag);
+          }
         }
       }
     });
     super.initState();
-    _get(1);
+    if(widget.list == 'Animes'){
+      _getListAnime(1);
+    }
+    else if(widget.list == 'Filmes'){
+      _getListFilmes(1);
+    }
+    else{
+      _getListOvas(1);
+    }
   }
 
 
@@ -60,32 +97,11 @@ class _AnimesListState extends State<AnimesList> {
     controller.dispose();
     super.dispose();
   }
-//
-//  buildContainer() {
-//    return Container(
-//        child: FutureBuilder(
-//            future: ANIMES.AnimeList(pag).then((response){
-//              Map decoded = json.decode(response.body);
-//              Iterable lista = decoded['animes']['animes'];
-//              list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
-//              animes.addAll(list.map((f) => f).toList());
-//              return '';
-//            }),
-//            builder: (context, snapshot) {
-//              if (snapshot.hasData) {
-//                return ContentScroll(images: animes, controller: controller,);
-//              } else {
-//                return Center(
-//                  child: CircularProgressIndicator(),
-//                );
-//              }
-//            }));
-//  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MenuWidget(page: 'AnimeList',),
+      drawer: MenuWidget(page: widget.list,),
       appBar:  AppBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(0), bottom: Radius.circular(40)),

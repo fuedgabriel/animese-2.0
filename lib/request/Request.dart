@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-const baseUrl = "http://192.168.1.70:7844";
 
 
 class ANIMES{
@@ -11,6 +10,16 @@ class ANIMES{
   // ignore: non_constant_identifier_names
   static Future AnimeList(page) async{
     String url = 'https://remainder.myvideo.vip/api-new/animes/'+page.toString()+'?search=all';
+    return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future MovieList(page) async{
+    String url = 'https://remainder.samehada.stream/api-new/menufilmes/'+page.toString()+'?search=all';
+    return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future OvaList(page) async{
+    String url = 'https://remainder.samehada.stream/api-new/menuovas/'+page.toString()+'?search=all';
     return await http.get(url);
   }
   // ignore: non_constant_identifier_names
@@ -33,8 +42,15 @@ class ANIMES{
     String url = 'https://remainder.myvideo.vip/api-new/assistindov2/'+quality+'/'+id.toString()+'/PLAYER-2/c7e5767ead45d629';
     return await http.get(url);
   }
-}
-class API{
-
+  // ignore: non_constant_identifier_names
+  static Future GetCategory() async{
+    String url = 'http://remainder.samehada.stream/api-new/categorias';
+    return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future GetCategoryList(id, page) async{
+    String url = 'http://remainder.samehada.stream/api-new/categoria/'+id.toString()+'/'+page.toString();
+    return await http.get(url);
+  }
 
 }

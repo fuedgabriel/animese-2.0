@@ -26,7 +26,7 @@ class _MenuWidgetState extends State<MenuWidget> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.all(0),
-            height: 200,
+            height: 150,
             width: double.infinity,
             child: Card(
               elevation: 0,
@@ -34,7 +34,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               clipBehavior: Clip.antiAlias,
               color: Color.fromRGBO(38, 50, 56, 10),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(0), topLeft: Radius.circular(10), topRight: Radius.circular(10)
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(0), topLeft: Radius.circular(0), topRight: Radius.circular(0)
                 ),
               ),
             ),
@@ -56,7 +56,7 @@ class _MenuWidgetState extends State<MenuWidget> {
               leading: Icon(Icons.pageview),
               title: Text('Animes'),
               onTap: ()  {
-                if (widget.page == 'AnimeList') {
+                if (widget.page == 'Animes') {
                   Navigator.pop(context);
                 }
                 else{
@@ -72,7 +72,6 @@ class _MenuWidgetState extends State<MenuWidget> {
               }
           ),
           Divider(),
-
           ListTile(
             leading: Icon(Icons.favorite),
             title: Text('Favoritos'),
@@ -93,27 +92,64 @@ class _MenuWidgetState extends State<MenuWidget> {
             },
           ),
           Divider(),
-          Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: ListTile(
-              leading: Icon(Icons.report_problem),
-              title: Text("Suporte"),
+          ListTile(
+              leading: Icon(Icons.insert_photo),
+              title: Text('Categorias'),
               onTap: ()  {
-                if (widget.page == 'Suporte') {
+                if (widget.page == 'Category') {
                   Navigator.pop(context);
                 }
                 else{
-                  if(widget.page == 'Inicio'){
+                  if(widget.page == 'Home'){
                     Navigator.pop(context);
-                    Navigator.of(context).pushNamed('/Suporte');
+                    Navigator.of(context).pushNamed('/Category');
                   }
                   else{
                     Navigator.pop(context);
-                    Navigator.of(context).pushReplacementNamed('/Suporte');
+                    Navigator.of(context).pushReplacementNamed('/Category');
                   }
                 }
-              },
-            ),
+              }
+          ),
+          Divider(),
+          ListTile(
+              leading: Icon(Icons.movie),
+              title: Text('Filmes'),
+              onTap: ()  {
+                if (widget.page == 'Filmes') {
+                  Navigator.pop(context);
+                }
+                else{
+                  if(widget.page == 'Home'){
+                    Navigator.pop(context);
+                    Navigator.of(context).pushNamed('/MovieList');
+                  }
+                  else{
+                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacementNamed('/MovieList');
+                  }
+                }
+              }
+          ),
+          Divider(),
+          ListTile(
+              leading: Icon(Icons.insert_photo),
+              title: Text('Ovas'),
+              onTap: ()  {
+                if (widget.page == 'Ovas') {
+                  Navigator.pop(context);
+                }
+                else{
+                  if(widget.page == 'Home'){
+                    Navigator.pop(context);
+                    Navigator.of(context).pushNamed('/OvaList');
+                  }
+                  else{
+                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacementNamed('/OvaList');
+                  }
+                }
+              }
           ),
           Divider(),
           Align(

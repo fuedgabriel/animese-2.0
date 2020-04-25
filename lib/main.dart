@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/Home/HomePage.dart';
 import 'screens/AnimeList/AnimeList.dart';
 import 'screens/AnimeList/AnimeListFavorite.dart';
+import 'screens/Category/Category.dart';
 import 'widgets/HexColor.dart';
 void main() => runApp(MyApp());
 
@@ -25,8 +26,11 @@ class MyApp extends StatelessWidget {
       ),
       routes: <String, WidgetBuilder>{
         '/Home': (BuildContext context) => HomePage(),
-        '/AnimeList': (BuildContext context) => AnimesList(),
-        '/AnimeListFavorite': (BuildContext context) => AnimeListFavorite()
+        '/AnimeList': (BuildContext context) => AnimesList('Animes'),
+        '/MovieList': (BuildContext context) => AnimesList('Filmes'),
+        '/OvaList': (BuildContext context) => AnimesList('Ovas'),
+        '/AnimeListFavorite': (BuildContext context) => AnimeListFavorite(),
+        '/Category': (BuildContext context) => Category(),
       },
 
       home: HomePage(),
