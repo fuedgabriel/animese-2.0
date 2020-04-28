@@ -1,23 +1,19 @@
 //Request
 import 'package:animese/request/Request.dart';
-import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 //Json
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
-//Json HomePage
-
 //Widget
+import 'package:animese/screens/Home/widget/Scroll_vertical.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:animese/widgets/Drawer.dart';
-//Desing
-//import 'package:swipe_button/swipe_button.dart';
 import 'package:flutter/material.dart';
+import 'package:animese/widgets/Drawer.dart';
 //pages
 import 'package:animese/screens/AnimePoster/Poster.dart';
 
+import 'package:firebase_admob/firebase_admob.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -47,7 +43,6 @@ class _HomePage extends State<HomePage> {
     _getHome();
     _stateFavorite();
   }
-
   _getHome(){
     Duration(seconds: 3);
     ANIMES.HomePage().then((response){
@@ -70,11 +65,12 @@ class _HomePage extends State<HomePage> {
 
   var anime = List<DescriptionJson>();
   List<String> favorite;
+
   Future _stateFavorite()async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     favorite = prefs.getStringList('favorite');
     for(int i = 0;i < favorite.length; i++){
-      ANIMES.Description(int.parse(favorite[i])).then((response){
+      ANIMES.Description(int.parse(favorite[i]), 'Animes').then((response){
         setState(() {
           favorite = favorite;
           anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));
@@ -97,7 +93,68 @@ class _HomePage extends State<HomePage> {
 //              }
 //            }));
 //  }
+
+
+
+
+//
+//
+//
+//  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+//    keywords: <String>['flutterio', 'beautiful apps'],
+//    contentUrl: 'https://flutter.io',
+//    childDirected: false,
+//    testDevices: <String>[], // Android emulators are considered test devices
+//  );
+//
+//  BannerAd myBanner = BannerAd(
+//    adUnitId: BannerAd.testAdUnitId,
+//    size: AdSize.smartBanner,
+//    targetingInfo: targetingInfo,
+//    listener: (MobileAdEvent event) {
+//      print("BannerAd event is $event");
+//    },
+//  );
+//
+//  InterstitialAd myInterstitialAd = InterstitialAd(
+//    adUnitId: InterstitialAd.testAdUnitId,
+//    targetingInfo: targetingInfo,
+//    listener: (MobileAdEvent event) {
+//      print("InterstitialAd event is $event");
+//    },
+//  );
+//
+//  BannerAd _bannerAd;
+//
+//  @override
+//  void initState() {
+//    FirebaseAdMob.instance.initialize(
+//        appId: 'ca-app-pub-4835344368909970~9613087096'
+//    );
+//    _bannerAd = myBanner..load()..show(anchorType: AnchorType.bottom);
+//    super.initState();
+//  }
+//
+//  @override
+//  void dispose() {
+////    _bannerAd.dispose();
+//    myInterstitialAd.dispose();
+//    super.dispose();
+//  }
+
+
+
+
+
+
+
+
+
+
+
+
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MenuWidget(page: 'Home',),
@@ -118,14 +175,13 @@ class _HomePage extends State<HomePage> {
       body: ListView(
         children: <Widget>[
           Padding(padding: EdgeInsets.only(bottom: 10)),
-          ContentScroll(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScroll(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScroll(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
+          ContentScroll(images: maisAssistidos, title: 'Mais assistidos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Animes',),
+          ContentScroll(images: lancamento, title: 'Lançamentos', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Animes',),
+          ContentScroll(images: recentes, title: 'Recentes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Animes',),
           ContenScrollFavorite(anime: anime, favorite: favorite, Title: 'Favoritos', imageWidth: MediaQuery.of(context).size.width*0.41,imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScroll(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScroll(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-          ContentScroll(images: ultimosOvas, title: 'Últimos Ova\'s', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36,),
-
+          ContentScroll(images: ultimosAtualizados, title: 'Últimos atualizados', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Animes',),
+          ContentScroll(images: ultimosFilmes, title: 'Últimos Filmes', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Filmes',),
+          ContentScroll(images: ultimosOvas, title: 'Últimos Ovas', imageWidth: MediaQuery.of(context).size.width*0.41, imageHeight: MediaQuery.of(context).size.height*0.36, type: 'Ovas',),
         ],
       ),
     );
@@ -149,13 +205,6 @@ class DataSearch extends SearchDelegate<String>{
 
     favoritos.add(sugestion);
     prefs.setStringList('lista', favoritos);
-  }
-
-  get(num) async{
-    ANIMES.Description(id[num]).then((response){
-      final json = jsonDecode(response.body);
-      return DescriptionJson.fromJson(json);
-    });
   }
 
   save(String key, dynamic value) async {
@@ -264,3 +313,5 @@ class DataSearch extends SearchDelegate<String>{
     );
   }
 }
+
+

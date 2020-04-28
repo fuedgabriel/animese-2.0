@@ -25,7 +25,7 @@ class _AnimeListFavoriteState extends State<AnimeListFavorite> {
 
     }else{
       for(int i = 0;i < favorite.length; i++){
-        ANIMES.Description(int.parse(favorite[i])).then((response){
+        ANIMES.Description(int.parse(favorite[i]), 'Animes').then((response){
           setState(() {
             favorite = favorite;
             anime.add(DescriptionJson.fromJson(jsonDecode(response.body)['anime']));

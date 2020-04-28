@@ -14,6 +14,7 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
+  // ignore: non_constant_identifier_names
   var CategoryListVar = List<CategoryListJson>();
 
   _CategoryState(){

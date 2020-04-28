@@ -96,7 +96,7 @@ class _VideoscreenState extends State<Videoscreen> {
     _stateFavorite();
   }
   _getDescription(id){
-    ANIMES.Description(id).then((response){
+    ANIMES.Description(id, 'Animes').then((response){
       setState(() {
         anime = DescriptionJson.fromJson(jsonDecode(response.body)['anime']);
         movie = anime.filmes.map((model) => LittleListAnimeJson.fromJson(model.toJson())).toList();
@@ -194,7 +194,7 @@ class _VideoscreenState extends State<Videoscreen> {
                     onPressed: ()
                     {
                       int ep;
-                      if(anime.btnDub == true || anime.btnLeg == true){
+                      if(anime.btnDub == true && anime.btnLeg == true){
                         showGeneralDialog(
                             barrierColor: Colors.black.withOpacity(0.5),
                             transitionBuilder: (context, a1, a2, widget) {
@@ -240,6 +240,7 @@ class _VideoscreenState extends State<Videoscreen> {
                                           ANIMES.Ep(anime.id, 1, 'DUB').then((response){
                                             setState(() {
                                               episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+                                              print(episode);
                                               if(episode.linkHd == true){
                                                 quality.add('HD - 720p');
                                               }
@@ -249,13 +250,12 @@ class _VideoscreenState extends State<Videoscreen> {
                                               if(episode.linkBg == true){
                                                 quality.add('BG - 360p');
                                               }
-                                              print('ado ado');
-                                              print(quality);
+                                              ep = anime.epDub;
+                                              Navigator.pop(context);
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
                                             });
                                           });
-                                          ep = anime.epDub;
-                                          Navigator.pop(context);
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
+
                                         }),
                                       ],
                                     ),
@@ -269,36 +269,47 @@ class _VideoscreenState extends State<Videoscreen> {
                             context: context,
                             pageBuilder: (context, animation1, animation2) {var a; return a; });
                       }
+                      else if(anime.btnLeg == true){
+                        episodesVal episode;
+                        List<String> quality = [];
+                        ANIMES.Ep(anime.id, 1, 'LEG').then((response){
+                          setState(() {
+                            episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+                            if(episode.linkHd == true){
+                              quality.add('HD - 720p');
+                            }
+                            if(episode.linkSd == true){
+                              quality.add('SD - 480p');
+                            }
+                            if(episode.linkBg == true){
+                              quality.add('BG - 360p');
+                            }
+                            ep = anime.epLeg;
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
+                          });
+                        });
+                      }
                       else{
-                        showGeneralDialog(
-                            barrierColor: Colors.black.withOpacity(0.5),
-                            transitionBuilder: (context, a1, a2, widget) {
-                              return Transform.scale(
-                                scale: a1.value,
-                                child: Opacity(
-                                  opacity: a1.value,
-                                  child: AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20), bottom: Radius.circular(20)),
-                                    ),
-                                    backgroundColor: HexColor('#212121'),
-                                    title: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text('Nenhum episódio disponível')
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            transitionDuration: Duration(milliseconds: 200),
-                            barrierDismissible: true,
-                            barrierLabel: '',
-                            context: context,
-                            pageBuilder: (context, animation1, animation2) {var a; return a; });
+                        episodesVal episode;
+                        List<String> quality = [];
+                        ANIMES.Ep(anime.id, 1, 'DUB').then((response){
+                          setState(() {
+                            episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+                            if(episode.linkHd == true){
+                              quality.add('HD - 720p');
+                            }
+                            if(episode.linkSd == true){
+                              quality.add('SD - 480p');
+                            }
+                            if(episode.linkBg == true){
+                              quality.add('BG - 360p');
+                            }
+                            ep = anime.epDub;
+                            Navigator.pop(context);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
+                          });
+                        });
                       }
                     },
                     shape: CircleBorder(),
@@ -311,56 +322,56 @@ class _VideoscreenState extends State<Videoscreen> {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 0.0,
-                left: 20.0,
-                child: IconButton(
-                  onPressed: () {
-                    _stateFavorite();
-                  },
-                  icon: Icon(Icons.assistant_photo),
-                  iconSize: 35.0,
-//                  color: Colors.white,
-                ),
-              ),
-              Positioned(
-                bottom: 0.0,
-                right: 25.0,
-                child: IconButton(
-                  onPressed: () {
-                    showGeneralDialog(
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionBuilder: (context, a1, a2, widget) {
-                          return Transform.scale(
-                            scale: a1.value,
-                            child: Opacity(
-                              opacity: a1.value,
-                              child: AlertDialog(
-                                shape: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16.0)),
-                                title: Text('Está função estará diponível em breve.',
-                                  style: TextStyle(
-                                    fontSize: 15.6,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        transitionDuration: Duration(milliseconds: 500),
-                        barrierDismissible: true,
-                        barrierLabel: '',
-                        context: context,
-                        pageBuilder: (context, animation1, animation2) {var a; return a; });
-                    Future.delayed(const Duration(milliseconds: 1200), () {
-                      Navigator.of(context).pop();
-                    });
-                  },
-                  icon: Icon(Icons.share),
-                  iconSize: 35.0,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-              ),
+//              Positioned(
+//                bottom: 0.0,
+//                left: 20.0,
+//                child: IconButton(
+//                  onPressed: () {
+//                    _stateFavorite();
+//                  },
+//                  icon: Icon(Icons.assistant_photo),
+//                  iconSize: 35.0,
+////                  color: Colors.white,
+//                ),
+//              ),
+//              Positioned(
+//                bottom: 0.0,
+//                right: 25.0,
+//                child: IconButton(
+//                  onPressed: () {
+//                    showGeneralDialog(
+//                        barrierColor: Colors.black.withOpacity(0.5),
+//                        transitionBuilder: (context, a1, a2, widget) {
+//                          return Transform.scale(
+//                            scale: a1.value,
+//                            child: Opacity(
+//                              opacity: a1.value,
+//                              child: AlertDialog(
+//                                shape: OutlineInputBorder(
+//                                    borderRadius: BorderRadius.circular(16.0)),
+//                                title: Text('Está função estará diponível em breve.',
+//                                  style: TextStyle(
+//                                    fontSize: 15.6,
+//                                  ),
+//                                ),
+//                              ),
+//                            ),
+//                          );
+//                        },
+//                        transitionDuration: Duration(milliseconds: 500),
+//                        barrierDismissible: true,
+//                        barrierLabel: '',
+//                        context: context,
+//                        pageBuilder: (context, animation1, animation2) {var a; return a; });
+//                    Future.delayed(const Duration(milliseconds: 1200), () {
+//                      Navigator.of(context).pop();
+//                    });
+//                  },
+//                  icon: Icon(Icons.share),
+//                  iconSize: 35.0,
+//                  color: Colors.black.withOpacity(0.5),
+//                ),
+//              ),
             ],
           ),
           Padding(

@@ -1,7 +1,5 @@
 //Widget
 import 'dart:convert';
-import 'package:animese/screens/AnimeList/AnimeListSimple.dart';
-import 'package:animese/widgets/Drawer.dart';
 import '../AnimeList/widget/scroll_vertical.dart';
 import 'package:flutter/material.dart';
 //Request
@@ -13,7 +11,9 @@ import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 
 
 
+// ignore: must_be_immutable
 class CategoryList extends StatefulWidget {
+  // ignore: non_constant_identifier_names
   String Title;
   String id;
   CategoryList(this.id, this.Title);

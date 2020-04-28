@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animese/screens/Player/Player.dart';
 
 
+// ignore: camel_case_types
 class Horizontal_scroll extends StatelessWidget {
   final List<LittleListAnimeJson> images;
   final String title;

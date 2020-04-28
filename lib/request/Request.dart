@@ -28,9 +28,32 @@ class ANIMES{
     return await http.get(url);
   }
   // ignore: non_constant_identifier_names
-  static Future Description(id) async{
-    String url = 'https://remainder.myvideo.vip/api-new/anime/'+id.toString();
+  static Future MovieSearch(name) async{
+    String url = 'https://remainder.samehada.stream/api-new/menufilmes/1?search='+name.toString();
     return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future OvaSearch(name) async{
+    String url = 'https://remainder.samehada.stream/api-new/menuovas/1?search='+name.toString();
+    return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future MovieOvaGet(id, language, end) async{
+    String url = 'https://remainder.myvideo.vip/api-new/assistindoFilmeOva/'+id.toString()+'/'+language.toString()+'/'+end;
+    return await http.get(url);
+  }
+  // ignore: non_constant_identifier_names
+  static Future Description(id, type) async{
+    if(type == 'Animes'){
+      String url = 'https://remainder.myvideo.vip/api-new/anime/'+id.toString();
+      return await http.get(url);
+    }else if(type == 'Filmes'){
+      String url = 'https://remainder.samehada.stream/api-new/filme/'+id.toString();
+      return await http.get(url);
+    }else{
+      String url = 'https://remainder.samehada.stream/api-new/ova/'+id.toString();
+      return await http.get(url);
+    }
   }
   // ignore: non_constant_identifier_names
   static Future Ep(id, ep, language) async{

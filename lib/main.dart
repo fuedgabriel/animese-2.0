@@ -4,11 +4,13 @@ import 'screens/AnimeList/AnimeList.dart';
 import 'screens/AnimeList/AnimeListFavorite.dart';
 import 'screens/Category/Category.dart';
 import 'widgets/HexColor.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-4835344368909970~9613087096');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Animese',
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 
 

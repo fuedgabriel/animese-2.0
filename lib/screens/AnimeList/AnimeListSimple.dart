@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
 import 'widget/scroll_vertical.dart';
 
+// ignore: must_be_immutable
 class AnimeListSimple extends StatefulWidget {
   List<AnimeListJson> animes;
   String title;
-  AnimeListSimple(this.animes, this.title);
+  String type;
+  AnimeListSimple(this.animes, this.title, this.type);
   @override
   _AnimeListSimpleState createState() => _AnimeListSimpleState();
 }
@@ -21,7 +23,7 @@ class _AnimeListSimpleState extends State<AnimeListSimple> {
         title: Center(child: Text(widget.title),),
         elevation: 5,
       ),
-      body: ContentScroll(images: widget.animes, controller: ScrollController(),),
+      body: ContentScroll(images: widget.animes, controller: ScrollController(), type: widget.type,),
     );
   }
 }

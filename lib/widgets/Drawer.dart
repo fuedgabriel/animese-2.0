@@ -37,6 +37,12 @@ class _MenuWidgetState extends State<MenuWidget> {
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100), bottomRight: Radius.circular(0), topLeft: Radius.circular(0), topRight: Radius.circular(0)
                 ),
               ),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 20, left: 20),
+                child: Image(
+                  image: AssetImage('assets/logo/NameIcon.png'),
+                ),
+              )
             ),
           ),
           ListTile(
@@ -150,30 +156,6 @@ class _MenuWidgetState extends State<MenuWidget> {
                   }
                 }
               }
-          ),
-          Divider(),
-          Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Configurações'),
-              onTap: ()
-              {
-                if (widget.page == 'Config') {
-                  Navigator.pop(context);
-                }
-                else{
-                  if(widget.page == 'Inicio'){
-                    Navigator.pop(context);
-                    Navigator.of(context).pushNamed('/Config');
-                  }
-                  else{
-                    Navigator.pop(context);
-                    Navigator.of(context).pushReplacementNamed('/Config');
-                  }
-                }
-              },
-            ),
           ),
           Divider(),
         ],

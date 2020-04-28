@@ -1,6 +1,8 @@
 //pages
 import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 import 'package:animese/screens/AnimePoster/Poster.dart';
+import 'package:animese/screens/AnimePoster/PosterMovieOva.dart';
+
 //widget
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,9 +14,11 @@ import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 class ContentScroll extends StatelessWidget {
   var images = List<AnimeListJson>();
   var controller = ScrollController();
+  String type;
   ContentScroll({
     this.images,
-    this.controller
+    this.controller,
+    this.type
   });
 
   Widget build(BuildContext context) {
@@ -51,12 +55,13 @@ class ContentScroll extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Videoscreen(images[index].id),
-                              ),
-                            );
+                            if(type == 'Animes'){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(images[index].id),),);
+                            }else if(type == 'Filmes'){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => VideoscreenMovieOva(images[index].id,type),),);
+                            }else{
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => VideoscreenMovieOva(images[index].id,type),),);
+                            }
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10.0),

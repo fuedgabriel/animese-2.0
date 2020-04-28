@@ -12,6 +12,7 @@ import 'package:animese/request/JSON/Episode/Player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/Request.dart';
 
+// ignore: must_be_immutable
 class PlayerVideo extends StatefulWidget {
 
   String nome;
@@ -192,6 +193,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   PlayEpisode( int episode) async {
     String mp4;
     ANIMES.Ep(widget.id, episode, widget.language).then((response){
@@ -232,6 +234,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
     });
 
   }
+  // ignore: non_constant_identifier_names
   ChangeQuality(int episode, quality) async {
     String mp4;
     ANIMES.Ep(widget.id, episode, widget.language).then((response){

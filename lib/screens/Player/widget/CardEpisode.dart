@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 //Player
 import 'package:video_box/video.controller.dart';
 import 'package:video_player/video_player.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 
 

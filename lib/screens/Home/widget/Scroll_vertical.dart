@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //pages
 import 'package:animese/screens/AnimePoster/Poster.dart';
+import 'package:animese/screens/AnimePoster/PosterMovieOva.dart';
 import 'package:animese/screens/AnimeList/AnimeListSimple.dart';
 
 
@@ -14,12 +15,14 @@ class ContentScroll extends StatelessWidget {
   final String title;
   final double imageHeight;
   final double imageWidth;
+  String type;
 
   ContentScroll({
     this.images,
     this.title,
     this.imageHeight,
     this.imageWidth,
+    this.type
   });
 
   @override
@@ -43,7 +46,7 @@ class ContentScroll extends StatelessWidget {
                 onTap: () {
                   var animes = List<AnimeListJson>();
                   animes.addAll(images.map((f) => f).toList());
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnimeListSimple(animes, title),),);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnimeListSimple(animes, title, type),),);
                 },
                 child: Icon(
                   Icons.arrow_forward,
@@ -81,12 +84,13 @@ class ContentScroll extends StatelessWidget {
 //                  ),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Videoscreen(images[index].id),
-                        ),
-                      );
+                      if(type == 'Animes'){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(images[index].id),),);
+                      }else if(type == 'Filmes'){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => VideoscreenMovieOva(images[index].id,type),),);
+                      }else{
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => VideoscreenMovieOva(images[index].id,type),),);
+                      }
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
@@ -116,15 +120,18 @@ class ContentScroll extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ContenScrollFavorite extends StatelessWidget {
   List<DescriptionJson> anime;
   List<String> favorite;
+  // ignore: non_constant_identifier_names
   final String Title;
   final double imageHeight;
   final double imageWidth;
   ContenScrollFavorite({
     this.anime,
     this.favorite,
+    // ignore: non_constant_identifier_names
     this.Title,
     this.imageWidth,
     this.imageHeight
@@ -216,7 +223,7 @@ class ContenScrollFavorite extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Videoscreen(anime[index].id),
+                              builder: (context) => Videoscreen(anime[index].id,),
                             ),
                           );
                         },

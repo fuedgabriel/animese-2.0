@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:animese/widgets/Drawer.dart';
 import 'widget/scroll_vertical.dart';
 import 'package:flutter/material.dart';
+
 //Request
 import 'package:animese/request/Request.dart';
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
-//Pages
 
 
 
 
-
+// ignore: must_be_immutable
 class AnimesList extends StatefulWidget {
   String list;
   AnimesList(this.list);
@@ -53,6 +53,35 @@ class _AnimesListState extends State<AnimesList> {
         Iterable lista = decoded['ovas']['ovas'];
         list = lista.map((model) => AnimeListJson.fromJson(model)).toList();
         animes.addAll(list.map((f) => f).toList());
+      });
+    });
+  }
+
+  _searchAnime(name){
+    ANIMES.AnimeSearch(name).then((response){
+      setState(() {
+        Map decoded = json.decode(response.body);
+        print(decoded);
+        Iterable lista = decoded['animes']['animes'];
+        animes = lista.map((model) => AnimeListJson.fromJson(model)).toList();
+      });
+    });
+  }
+  _searchMovie(name){
+    ANIMES.MovieSearch(name).then((response){
+      setState(() {
+        Map decoded = json.decode(response.body);
+        Iterable lista = decoded['filmes']['filmes'];
+        animes = lista.map((model) => AnimeListJson.fromJson(model)).toList();
+      });
+    });
+  }
+  _searchOva(name){
+    ANIMES.OvaSearch(name).then((response){
+      setState(() {
+        Map decoded = json.decode(response.body);
+        Iterable lista = decoded['ovas']['ovas'];
+        animes = lista.map((model) => AnimeListJson.fromJson(model)).toList();
       });
     });
   }
@@ -106,10 +135,40 @@ class _AnimesListState extends State<AnimesList> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(0), bottom: Radius.circular(40)),
         ),
-        title: Center(child: Text('Lista de animes          '),),
+        title: Center(
+          child: TextFormField(
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500
+            ),
+            cursorColor: Colors.white,
+            autofocus: true,
+            decoration: InputDecoration.collapsed(
+              hintText: 'Digite seu anime',
+              border: InputBorder.none,
+              hintStyle: TextStyle(
+                color: Colors.white.withOpacity(0.5)
+              )
+            ),
+            onChanged: (value){
+              setState(() {
+                if(value == ''){
+                  value = 'all';
+                }
+                if(widget.list == 'Animes'){
+                  _searchAnime(value);
+                }else if(widget.list == 'Filmes'){
+                  _searchMovie(value);
+                }else{
+                  _searchOva(value);
+                }
+              });
+            },
+          ),
+        ),
         elevation: 5,
       ),
-      body: ContentScroll(controller: controller,images: animes,)
+      body: ContentScroll(controller: controller,images: animes,type: widget.list,)
 
     );
   }
