@@ -42,13 +42,14 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
 
 //       initPosition: Duration(minutes: 23, seconds: 50)
     )
-      ..addFullScreenChangeListener((c) async {})
-      ..addPlayEndListener(() {
+      ..addListener((c) {
+        // print(c.value.positionText);
+      })
+      ..addFullScreenChangeListener((c, isFullScreen) async {})
+      ..addPlayEndListener((c) {
         /*play end*/
       })
       ..initialize().then((_) {
-
-
         // initialized
       });
   }
@@ -77,32 +78,33 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
               controller: vc,
               children: <Widget>[
                 Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.0015)*-1, (MediaQuery.of(context).size.width * 0.0025)*-1),
-                  child: IconButton(
-                    iconSize: VideoBox.centerIconSize,
-                    disabledColor: Colors.red,
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Align(
-                    alignment: Alignment((MediaQuery.of(context).size.height * 0.0004)*-1, (MediaQuery.of(context).size.width * 0.0020)*-1),
-                    child: Text(
-                      widget.nome,
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white
-                      ),
-                    )
-                ),
-                Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.00115), (MediaQuery.of(context).size.width * 0.0025)*-1),
-                  child: Image(
-                    height: 32,
-                    width: 32,
-                    image: AssetImage('assets/logo/Icon.png'),
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Row(
+                      children: <Widget>[
+                        IconButton(
+                          iconSize: VideoBox.centerIconSize,
+                          disabledColor: Colors.red,
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Text(
+                          widget.nome,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                          ),
+                        ),
+                        Image(
+                          height: 32,
+                          width: 32,
+                          image: AssetImage('assets/logo/Icon.png'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -116,7 +118,7 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 32,),
+                  icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 36,),
                   color: Colors.red,
                   onPressed: (){
                     ANIMES.MovieOvaGet(widget.id, widget.language, widget.end).then((response) async{
@@ -129,7 +131,19 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
                     });
                     },
                 ),
-                Text('Episódio 1'),
+                FlatButton(
+                  onPressed: (){
+                    ANIMES.MovieOvaGet(widget.id, widget.language, widget.end).then((response) async{
+                      final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+                      String mp4 = url.requestedMP4.url;
+                      print(mp4);
+                      vc.setSource(VideoPlayerController.network(mp4));
+                      vc.initialize();
+                      vc.play();
+                    });
+                    },
+                  child: Text('Episódio 1'),
+                ),
                 Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.07)),
                 FlatButton(
                   child: Text('Externo',

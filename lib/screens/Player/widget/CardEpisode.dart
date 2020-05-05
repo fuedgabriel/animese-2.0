@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_box/video.controller.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:rxdart/subjects.dart';
+
 
 
 
@@ -20,6 +22,8 @@ class CardPlayer  extends StatelessWidget{
   final int id;
   VideoController vc;
   final String lanuage;
+  Sink<String> titleSink;
+  String nome;
 
 
   CardPlayer({
@@ -27,13 +31,13 @@ class CardPlayer  extends StatelessWidget{
     this.epState,
     this.id,
     this.vc,
-    this.lanuage
+    this.lanuage,
+    this.titleSink,
+    this.nome
   });
   
   Color cardColor;
   IconData visibility;
-
-  
 
   _saveViews(ep) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,6 +45,16 @@ class CardPlayer  extends StatelessWidget{
   }
 
   _launchURL(bool validador, int episode) async {
+    if(episode >= 100){
+      nome = nome.replaceRange(nome.length-5, nome.length, '   ') + episode.toString();
+      titleSink.add(nome);
+    }else if (episode >= 10){
+      nome = nome.replaceRange(nome.length-4, nome.length, '   ') + episode.toString();
+      titleSink.add(nome);
+    }else{
+      nome = nome.replaceRange(nome.length-3, nome.length, '   ') + episode.toString();
+      titleSink.add(nome);
+    }
     String mp4;
     ANIMES.Ep(id, episode, lanuage).then((response){
       final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
@@ -108,11 +122,15 @@ class CardPlayer  extends StatelessWidget{
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 32,),
+                  icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 36,),
                   color: Colors.red,
                   onPressed: (){_launchURL(false, (index+1));},
                 ),
-                Text('Episódio '+(index+1).toString()),
+                FlatButton(
+                    onPressed: (){_launchURL(false, (index+1));},
+                    child: Text('Episódio '+(index+1).toString()),
+                ),
+
                 Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.07)),
                 FlatButton(
                   child: Text('Externo',

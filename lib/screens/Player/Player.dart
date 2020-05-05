@@ -12,6 +12,9 @@ import 'package:animese/request/JSON/Episode/Player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/Request.dart';
 
+
+import 'package:rxdart/subjects.dart';
+
 // ignore: must_be_immutable
 class PlayerVideo extends StatefulWidget {
 
@@ -29,6 +32,10 @@ class _PlayerVideoState extends State<PlayerVideo> {
   VideoController vc;
   int epState;
 
+  Stream<String> get title$ => _titleSubject.stream;
+  Sink<String> get titleSink => _titleSubject.sink;
+  final _titleSubject = BehaviorSubject<String>.seeded('');
+
 
 
   ScrollController controller = ScrollController();
@@ -44,6 +51,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
   @override
   void initState() {
     super.initState();
+    titleSink.add(widget.nome+'   ');
     _getViews().then((ep){
       setState(() {
         if(ep == null){epState = 0;}
@@ -60,13 +68,14 @@ class _PlayerVideoState extends State<PlayerVideo> {
 
 //       initPosition: Duration(minutes: 23, seconds: 50)
     )
-      ..addFullScreenChangeListener((c) async {})
-      ..addPlayEndListener(() {
+      ..addListener((c) {
+        // print(c.value.positionText);
+      })
+      ..addFullScreenChangeListener((c, isFullScreen) async {})
+      ..addPlayEndListener((c) {
         /*play end*/
       })
       ..initialize().then((_) {
-
-
         // initialized
       });
   }
@@ -75,6 +84,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
   void dispose() {
     vc.dispose();
     super.dispose();
+
   }
 //
 //  void _changeSource(String src) async {
@@ -95,60 +105,77 @@ class _PlayerVideoState extends State<PlayerVideo> {
               controller: vc,
               children: <Widget>[
                 Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.0015)*-1, (MediaQuery.of(context).size.width * 0.0025)*-1),
-                  child: IconButton(
-                    iconSize: VideoBox.centerIconSize,
-                    disabledColor: Colors.red,
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: StreamBuilder<String>(
+                      stream: title$,
+                      initialData: '',
+                      builder: (context, snapshot) {
+                        return Row(
+                          children: <Widget>[
+                            IconButton(
+                              iconSize: VideoBox.centerIconSize,
+                              disabledColor: Colors.red,
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            Text(
+                              snapshot.data,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 0, right: 40, top: 10, ),
+                    child: Image(
+                      height: 32,
+                      width: 32,
+                      image: AssetImage('assets/logo/Icon.png'),
+                    ),
                   ),
                 ),
                 Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.0004)*-1, (MediaQuery.of(context).size.width * 0.0020)*-1),
-                  child: Text(
-                    widget.nome,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white
-                    ),
-                  )
-                ),
-                Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.0015), (MediaQuery.of(context).size.width * 0.0025)*-1),
-                    child: DropdownButton<String>(
-                      icon: Icon(Icons.settings,color: Colors.white,),
-                      style: TextStyle(color: Colors.deepPurple),
-                      underline: Container(color: Colors.transparent,),
-                      onChanged: (String newValue) {
-                      },
-                      items: widget.quality.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: GestureDetector(
-                            child: Text(value),
-                            onTap: (){
-                              try {
-                                _getViews().then((ep){
-                                  print( value.substring(0,2));
-                                  ChangeQuality(ep,'HD');
-                                });
-                              } on Exception catch (_) {
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                      padding: EdgeInsets.all(8), 
+                      child: DropdownButton<String>(
+                        icon: Icon(Icons.settings,color: Colors.white,),
+                        style: TextStyle(color: Colors.deepPurple),
+                        underline: Container(color: Colors.transparent,),
+                        onChanged: (String newValue) {
+                        },
+                        items: widget.quality.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: GestureDetector(
+                              child: Text(value),
+                              onTap: (){
+                                try {
+                                  _getViews().then((ep){
+                                    print( value.substring(0,2));
+                                    ChangeQuality(ep,'HD');
+                                  });
+                                } on Exception catch (_) {
 
-                              }
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    )
-                ),
-                Align(
-                  alignment: Alignment((MediaQuery.of(context).size.height * 0.00115), (MediaQuery.of(context).size.width * 0.0025)*-1),
-                  child: Image(
-                    height: 32,
-                    width: 32,
-                    image: AssetImage('assets/logo/Icon.png'),
+                                }
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
                   ),
                 ),
                 Align(
@@ -158,7 +185,6 @@ class _PlayerVideoState extends State<PlayerVideo> {
                     disabledColor: Colors.white60,
                     icon: Icon(Icons.skip_next),
                     onPressed: () {
-
                       _getViews().then((ep){
                         PlayEpisode(ep+1);
                       });
@@ -178,7 +204,6 @@ class _PlayerVideoState extends State<PlayerVideo> {
                         }else{
                           PlayEpisode(ep-1);
                         }
-
                       });
                     },
                   ),
@@ -186,8 +211,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
               ],
             ),
           ),
-          CardPlayer(ep: widget.epi, epState: epState,id: widget.id ,vc: vc, lanuage: widget.language)
-
+          CardPlayer(ep: widget.epi, epState: epState,id: widget.id ,vc: vc, lanuage: widget.language, titleSink: titleSink, nome: widget.nome+'   ',)
         ],
       ),
     );
@@ -195,6 +219,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
 
   // ignore: non_constant_identifier_names
   PlayEpisode( int episode) async {
+    titleSink.add(widget.nome + '  '+episode.toString());
     String mp4;
     ANIMES.Ep(widget.id, episode, widget.language).then((response){
       final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
