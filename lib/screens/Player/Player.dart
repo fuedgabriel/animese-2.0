@@ -1,7 +1,7 @@
+//Player
 import 'package:flutter/material.dart';
 import 'package:video_box/video.controller.dart';
 import 'package:video_box/video_box.dart';
-// import 'package:video_box/widgets/buffer_slider.dart';
 import 'package:video_player/video_player.dart';
 //widget
 import 'widget/CardEpisode.dart';
@@ -12,7 +12,8 @@ import 'package:animese/request/JSON/Episode/Player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animese/request/Request.dart';
 
-
+//Nome
+import 'package:wakelock/wakelock.dart';
 import 'package:rxdart/subjects.dart';
 
 // ignore: must_be_immutable
@@ -29,6 +30,7 @@ class PlayerVideo extends StatefulWidget {
 }
 
 class _PlayerVideoState extends State<PlayerVideo> {
+
   VideoController vc;
   int epState;
 
@@ -61,7 +63,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
     vc = VideoController(
       source: VideoPlayerController.network('https://docs.google.com/uc?export=download&id=1gd3n1knckqiI3FU4N_4db5oh13j3C2hN'),
       looping: false,
-      autoplay: false,
+      autoplay: true,
       circularProgressIndicatorColor: Colors.green,
       cover: Image.asset('assets/logo/NameIcon.png'),
       controllerWidgets: true,
@@ -74,9 +76,11 @@ class _PlayerVideoState extends State<PlayerVideo> {
       ..addFullScreenChangeListener((c, isFullScreen) async {})
       ..addPlayEndListener((c) {
         /*play end*/
+        Wakelock.disable();
       })
       ..initialize().then((_) {
         // initialized
+        Wakelock.enable();
       });
   }
 
@@ -166,7 +170,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
                                 try {
                                   _getViews().then((ep){
                                     print( value.substring(0,2));
-                                    ChangeQuality(ep,'HD');
+                                    ChangeQuality(ep, value.substring(0,2));
                                   });
                                 } on Exception catch (_) {
 
@@ -260,6 +264,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
 
   }
   // ignore: non_constant_identifier_names
+
   ChangeQuality(int episode, quality) async {
     String mp4;
     ANIMES.Ep(widget.id, episode, widget.language).then((response){
@@ -269,6 +274,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
         mp4 = url.requestedMP4.url;
         print(mp4);
         vc.setSource(VideoPlayerController.network(mp4));
+
         vc.initialize();
         vc.play();
       });

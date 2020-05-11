@@ -67,21 +67,7 @@ class ContentScroll extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 child:  Container(
-//                  margin: EdgeInsets.symmetric(
-//                    horizontal: 2.0,
-//                    vertical: 5.0,
-//                  ),
                   width: imageWidth,
-//                  decoration: BoxDecoration(
-//                    borderRadius: BorderRadius.circular(10.0),
-//                    boxShadow: [
-//                      BoxShadow(
-//                        color: HexColor('#2b2a2a'),
-//                        offset: Offset(0.0, 1.0),
-//                        blurRadius: 3.0,
-//                      ),
-//                    ],
-//                  ),
                   child: GestureDetector(
                     onTap: () {
                       if(type == 'Animes'){

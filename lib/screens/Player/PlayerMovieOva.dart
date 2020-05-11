@@ -6,7 +6,8 @@ import 'package:video_player/video_player.dart';
 import 'package:animese/request/Request.dart';
 import 'package:animese/request/JSON/Episode/Player.dart';
 import 'dart:convert';
-
+import 'package:wakelock/wakelock.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 // ignore: must_be_immutable
 class PlayerVideoOvaMovie extends StatefulWidget {
 
@@ -48,9 +49,11 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
       ..addFullScreenChangeListener((c, isFullScreen) async {})
       ..addPlayEndListener((c) {
         /*play end*/
+        Wakelock.disable();
       })
       ..initialize().then((_) {
         // initialized
+        Wakelock.enable();
       });
   }
 
@@ -92,18 +95,24 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
                           },
                         ),
                         Text(
-                          widget.nome,
+                          widget.nome.replaceRange(24, widget.nome.length, '...'),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 19,
                           ),
                         ),
-                        Image(
-                          height: 32,
-                          width: 32,
-                          image: AssetImage('assets/logo/Icon.png'),
-                        ),
                       ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 0, right: 40, top: 10, ),
+                    child: Image(
+                      height: 32,
+                      width: 32,
+                      image: AssetImage('assets/logo/Icon.png'),
                     ),
                   ),
                 ),
@@ -144,26 +153,9 @@ class _PlayerVideoState extends State<PlayerVideoOvaMovie> {
                     },
                   child: Text('Episódio 1'),
                 ),
-                Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.07)),
-                FlatButton(
-                  child: Text('Externo',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400
-                    ),
-                  ),
-                  onPressed: (){
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.file_download, color: Colors.red,size: 32,),
-                  color: Colors.black26,
-                  onPressed: (){
-                  },
-                ),
               ],
             ),
           )
-
         ],
       ),
     );

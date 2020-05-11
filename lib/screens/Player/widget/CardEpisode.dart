@@ -9,9 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //Player
 import 'package:video_box/video.controller.dart';
 import 'package:video_player/video_player.dart';
-
-import 'package:rxdart/subjects.dart';
-
+//Download
 
 
 
@@ -116,56 +114,99 @@ class CardPlayer  extends StatelessWidget{
           }
           return Card(
             color: cardColor,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
+            child: Stack(
               children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 36,),
-                  color: Colors.red,
-                  onPressed: (){_launchURL(false, (index+1));},
-                ),
-                FlatButton(
-                    onPressed: (){_launchURL(false, (index+1));},
-                    child: Text('Episódio '+(index+1).toString()),
-                ),
-
-                Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.height*0.07)),
-                FlatButton(
-                  child: Text('Externo',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.play_circle_outline, color: Colors.red,size: 36,),
+                      color: Colors.red,
+                      onPressed: (){_launchURL(false, (index+1));},
                     ),
-                  ),
-                  onPressed: (){
-//                    _launchURL(true, (index+1));
-                  },
+                    FlatButton(
+                      onPressed: (){_launchURL(false, (index+1));},
+                      child: Text('Episódio '+(index+1).toString()),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.file_download, color: Colors.red,size: 32,),
-                  color: Colors.black26,
-                  onPressed: (){
-//                    print(epState);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(visibility, color: Colors.red,size: 32,),
-                  color: Colors.black26,
-                  onPressed: (){
-                    if(visibility == Icons.visibility){
-                      _saveViews(index+1);
-                    }else{
-                      _saveViews(index);
-                    }
-                  },
-                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(visibility, color: Colors.red,size: 32,),
+                      color: Colors.black26,
+                      onPressed: (){
+                        if(visibility == Icons.visibility){
+                          _saveViews(index+1);
+                        }else{
+                          _saveViews(index);
+                        }
+                      },
+                    ),
+                  ],
+                )
+
+//                FlatButton(
+//                  child: Text('Externo',
+//                    style: TextStyle(
+//                        fontWeight: FontWeight.w400
+//                    ),
+//                  ),
+//                  onPressed: (){
+////                    _launchURL(true, (index+1));
+//                  },
+//                ),
+//                IconButton(
+//                  icon: Icon(Icons.file_download, color: Colors.red,size: 32,),
+//                  color: Colors.black26,
+//                  onPressed: (){
+//                    String mp4;
+//                    ANIMES.Ep(id, (index+1), lanuage).then((response){
+//                      final episodesVal ep = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
+//                      if(ep.linkHd == true){
+//                        ANIMES.PlayerUrl(ep.id, 'HD').then((response) async{
+//                          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+//                          mp4 = url.requestedMP4.url;
+//                          print(mp4);
+//                          print('Download HD');
+//                          print('episódio');
+//                          print(index+1);
+//                          _saveViews(index+1);
+//
+//                        });
+//                      }
+//                      else if(ep.linkSd == true){
+//                        ANIMES.PlayerUrl(ep.id, 'SD').then((response) async{
+//                          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+//                          mp4 = url.requestedMP4.url;
+//                          print(mp4);
+//                          print('Download SD');
+//                        });
+//                      }
+//                      else if(ep.linkBg == true){
+//                        ANIMES.PlayerUrl(ep.id, 'BG').then((response) async{
+//                          final PPlay url = PPlay.fromJson(jsonDecode(response.body));
+//                          mp4 = url.requestedMP4.url;
+//                          print(mp4);
+//                          print('Download BG');
+//                        });
+//                      }
+//
+//                    });
+//
+//
+//
+////                    print(epState);
+//                  },
+//                ),
+
               ],
             ),
           );
         },
       ),
     );
-
   }
 }

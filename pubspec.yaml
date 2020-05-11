@@ -14,6 +14,13 @@ dependencies:
   cached_network_image: ^2.2.0 # Loading image
   firebase_admob: ^0.9.3+2 # Propaganda
   wakelock: ^0.1.4+1 #Lock wake
+  download_manager: ^1.0.1+2
+  auto_size_text: ^2.1.0
+
+
+
+
+
 
 
 
