@@ -109,6 +109,15 @@ class _VideoscreenMovieOvaState extends State<VideoscreenMovieOva> {
                     height: MediaQuery.of(context).size.height * 0.04,
                     width: MediaQuery.of(context).size.width * 0.7,
                   ),
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    iconSize: 30.0,
+                    color: Colors.transparent,
+                    onPressed: ()
+                    {
+                    },
+
+                  ),
                 ],
               ),
               Positioned.fill(

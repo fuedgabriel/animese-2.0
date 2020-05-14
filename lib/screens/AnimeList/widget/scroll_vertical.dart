@@ -10,6 +10,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:animese/request/JSON/AnimeListJson/AnimeListJson.dart';
 import 'package:animese/request/JSON/DescriptionJson/DescriptionJson.dart';
 
+
+
 // ignore: must_be_immutable
 class ContentScroll extends StatelessWidget {
   var images = List<AnimeListJson>();
@@ -51,7 +53,6 @@ class ContentScroll extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           color: Colors.white12
-
                         ),
                         child: GestureDetector(
                           onTap: () async {
@@ -81,10 +82,11 @@ class ContentScroll extends StatelessWidget {
                           child: Text(
                             images[index].nome.toUpperCase(),
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                                foreground: Paint()..shader = LinearGradient(
+                                  colors: <Color>[Colors.red, Colors.white],
+                                ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0))),
                           ),
                         ),
                       ),
@@ -199,10 +201,11 @@ class ContentScrollFavorite extends StatelessWidget {
                             child: Text(
                               anime[index].nome.toUpperCase(),
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  foreground: Paint()..shader = LinearGradient(
+                                    colors: <Color>[Colors.red, Colors.white],
+                                  ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0))),
                             ),
                           ),
                         ),
@@ -316,10 +319,11 @@ class ContentScrollCategory extends StatelessWidget {
                             child: Text(
                               anime[index].nome.toUpperCase(),
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  foreground: Paint()..shader = LinearGradient(
+                                    colors: <Color>[Colors.red, Colors.white],
+                                  ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0))),
                             ),
                           ),
                         ),
