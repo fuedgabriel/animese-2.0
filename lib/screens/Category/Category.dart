@@ -16,6 +16,7 @@ class Category extends StatefulWidget {
 class _CategoryState extends State<Category> {
   // ignore: non_constant_identifier_names
   var CategoryListVar = List<CategoryListJson>();
+  var controller = ScrollController();
 
   _CategoryState(){
     _getCategory();
@@ -30,55 +31,53 @@ class _CategoryState extends State<Category> {
       });
     });
   }
+  List<Color> cor = [Colors.deepOrange, Colors.deepPurple, Colors.green, Colors.orange,Colors.teal,Colors.blueAccent,Colors.redAccent,Colors.black54,Colors.pink,Colors.brown,Colors.indigoAccent,Colors.indigo,Colors.deepPurpleAccent,Colors.white10,Colors.pinkAccent,Colors.deepPurpleAccent,Colors.deepOrange, Colors.deepPurple, Colors.green, Colors.orange,Colors.teal,Colors.blueAccent,Colors.redAccent,Colors.cyanAccent,Colors.pink,Colors.brown,Colors.indigoAccent,Colors.indigo,Colors.deepPurpleAccent,Colors.white10,Colors.pinkAccent,Colors.deepPurpleAccent,Colors.deepOrange, Colors.deepPurple, Colors.green, Colors.orange,Colors.teal,Colors.blueAccent,Colors.redAccent,Colors.cyanAccent,Colors.pink,Colors.brown,Colors.indigoAccent,Colors.indigo,Colors.deepPurpleAccent,Colors.white10,Colors.pinkAccent,Colors.deepPurpleAccent,Colors.deepOrange, Colors.deepPurple, Colors.green, Colors.orange,Colors.teal,Colors.blueAccent,Colors.redAccent,Colors.cyanAccent,Colors.pink,Colors.brown,Colors.indigoAccent,Colors.indigo,Colors.deepPurpleAccent,Colors.white10,Colors.pinkAccent,Colors.deepPurpleAccent];
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         drawer: MenuWidget(
           page: 'Category',
         ),
         appBar: AppBar(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(0), bottom: Radius.circular(40)),
-          ),
           title: Center(
             child: Text('Categorias         '),
           ),
           elevation: 5,
         ),
-        body: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: CategoryListVar.length,
-            padding: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 50,
-                width: 0,
-                child: GestureDetector(
-                  child: Card(
-                    color: Colors.grey[400],
-                    child: Center(
-                      child: GestureDetector(
-                        child: Text(
-                          CategoryListVar[index].nome,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600
-                          ),
-                        ),
-                        onTap: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CategoryList(CategoryListVar[index].id.toString(), CategoryListVar[index].nome),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+        body: GridView.builder(
+          controller: controller,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, mainAxisSpacing: 8, childAspectRatio: 0.9 ),
+          scrollDirection: Axis.vertical,
+          itemCount: CategoryListVar.length,
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10,bottom: 10),
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryList(CategoryListVar[index].id.toString(), CategoryListVar[index].nome),
                   ),
-                )
-              );
-            }));
+                );
+              },
+              child: Card(
+                color: cor[index],
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 200,
+                  child: Text(CategoryListVar[index].nome,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),),
+                ),
+              ),
+            );
+          },
+        ),
+    );
   }
 }

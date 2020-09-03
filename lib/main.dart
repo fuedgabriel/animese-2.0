@@ -4,21 +4,25 @@ import 'screens/AnimeList/AnimeList.dart';
 import 'screens/AnimeList/AnimeListFavorite.dart';
 import 'screens/Category/Category.dart';
 import 'widgets/HexColor.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import 'widgets/BottonBar.dart';
+
+//import 'package:firebase_analytics/firebase_analytics.dart';
+//import 'package:firebase_analytics/observer.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+//  static FirebaseAnalytics analytics = FirebaseAnalytics();
+//  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   Widget build(BuildContext context) {
-    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-4835344368909970~9613087096');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Animese',
       theme: ThemeData(
-        scaffoldBackgroundColor: HexColor('#212121'),
-        primaryColor: HexColor('#263238'),
-//        accentColor: Colors.deepPurpleAccent[600],
-//        backgroundColor: HexColor.fromHex('#5a0089'),
+        scaffoldBackgroundColor: HexColor('#080808'),
+        primaryColor: HexColor('#000000'),
         fontFamily: 'Georgia',
         textTheme: TextTheme(
           headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
@@ -33,10 +37,9 @@ class MyApp extends StatelessWidget {
         '/OvaList': (BuildContext context) => AnimesList('Ovas'),
         '/AnimeListFavorite': (BuildContext context) => AnimeListFavorite(),
         '/Category': (BuildContext context) => Category(),
+        '/BottonBar': (BuildContext context) => BottonBar(),
       },
-
-
-      home: HomePage(),
+      home: BottonBar(),
 
     );
   }

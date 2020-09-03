@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animese/widgets/HexColor.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widget/circular_clipper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //Request
@@ -29,7 +30,7 @@ class _VideoscreenMovieOvaState extends State<VideoscreenMovieOva> {
   Color descriptionD = Colors.white54;
 
 
-  String urlImage = '';
+  String urlImage = 'https://i.pinimg.com/originals/42/a8/d4/42a8d4625aeb088c45eba5a84ca36325.gif';
   String releases = '.....';
   String season = 'Carregando...';
   String description = 'Carregando...';
@@ -50,14 +51,25 @@ class _VideoscreenMovieOvaState extends State<VideoscreenMovieOva> {
           anime = ListJsonOvaMovie.fromJson(jsonDecode(response.body)['filme']);
         }else{
           anime = ListJsonOvaMovie.fromJson(jsonDecode(response.body)['ova']);
+          print("aaaaa");
         }
         releases = anime.lancamento;
-        urlImage = anime.capa;
+        if(urlImage == null){
+          urlImage = anime.capa;
+        }
         description = anime.ds;
         name = anime.nome;
 
       });
     });
+  }
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
 
@@ -240,6 +252,16 @@ class _VideoscreenMovieOvaState extends State<VideoscreenMovieOva> {
                   style: TextStyle(
                       color: descriptionN
                   ),
+                ),
+                SizedBox(height: 10.0),
+                ListTile(
+                  leading: Image.network('https://i.imgur.com/uDWENxE.jpg'),
+                  title: Text('Organize seus animes', style: TextStyle(color: Colors.white),),
+                  subtitle: Image.network('https://i.imgur.com/mJ5Nzxs.png'),
+                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.yellow,),
+                  onTap: () {
+                    _launchURL('https://myanimelist.net/');
+                  },
                 ),
               ],
             ),

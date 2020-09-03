@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animese/widgets/HexColor.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widget/horizontal_scroll.dart';
 import 'widget/circular_clipper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,7 +21,8 @@ import 'package:animese/screens/Player/Player.dart';
 // ignore: must_be_immutable
 class Videoscreen extends StatefulWidget {
   final id;
-  Videoscreen(this.id);
+  final linkImage;
+  Videoscreen(this.id, this.linkImage);
   _VideoscreenState createState() => _VideoscreenState(id);
 }
 
@@ -47,6 +49,14 @@ class _VideoscreenState extends State<Videoscreen> {
   var movie = List<LittleListAnimeJson>();
 
   IconData favoriteIcon = Icons.favorite_border;
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   _saveFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -114,7 +124,12 @@ class _VideoscreenState extends State<Videoscreen> {
         season = anime.temporada;
         espisodes = anime.epLeg.toString();
         releases = anime.lancamento;
-        urlImage = anime.capa;
+        if(widget.linkImage != ""){
+          urlImage = widget.linkImage;
+        }else{
+          urlImage = anime.capa;
+        }
+
         description = anime.ds;
         name = anime.nome;
         nameTemp = anime.temporada;
@@ -229,7 +244,7 @@ class _VideoscreenState extends State<Videoscreen> {
                                               }
                                               ep = anime.epLeg;
                                               Navigator.pop(context);
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality, anime.capa),),);
                                             });
                                           });
 
@@ -252,7 +267,7 @@ class _VideoscreenState extends State<Videoscreen> {
                                               }
                                               ep = anime.epDub;
                                               Navigator.pop(context);
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality, anime.capa),),);
                                             });
                                           });
 
@@ -274,6 +289,8 @@ class _VideoscreenState extends State<Videoscreen> {
                         List<String> quality = [];
                         ANIMES.Ep(anime.id, 1, 'LEG').then((response){
                           setState(() {
+                            print(response.body);
+                            print(anime.id);
                             episode = episodesVal.fromJson(json.decode(response.body)['eps']['eps'][0]);
                             if(episode.linkHd == true){
                               quality.add('HD - 720p');
@@ -286,7 +303,7 @@ class _VideoscreenState extends State<Videoscreen> {
                             }
                             ep = anime.epLeg;
                             Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality),),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'LEG', quality, anime.capa),),);
                           });
                         });
                       }
@@ -307,7 +324,7 @@ class _VideoscreenState extends State<Videoscreen> {
                             }
                             ep = anime.epDub;
                             Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality),),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideo(anime.id, anime.nome, ep, 'DUB', quality, anime.capa),),);
                           });
                         });
                       }
@@ -487,11 +504,21 @@ class _VideoscreenState extends State<Videoscreen> {
                       color: descriptionN
                   ),
                 ),
+                SizedBox(height: 10.0),
+                ListTile(
+                  leading: Image.network('https://i.imgur.com/uDWENxE.jpg'),
+                  title: Text('Organize seus animes', style: TextStyle(color: Colors.white),),
+                  subtitle: Image.network('https://i.imgur.com/mJ5Nzxs.png'),
+                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.yellow,),
+                  onTap: () {
+                    _launchURL('https://myanimelist.net/');
+                  },
+                ),
               ],
             ),
           ),
-          Horizontal_scroll(images: movie,title: 'Filmes :',),
-          Horizontal_scroll(images: ova,title: 'Ova\'s :',),
+          Horizontal_scroll(images: movie,title: 'Filmes :', type: 'F',),
+          Horizontal_scroll(images: ova,title: 'Ova\'s :', type: 'O'),
           Padding(padding: EdgeInsets.all(10))
         ],
       ),

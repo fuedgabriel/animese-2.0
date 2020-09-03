@@ -3,6 +3,19 @@ import 'package:http/http.dart' as http;
 
 class ANIMES{
   // ignore: non_constant_identifier_names
+
+  static Future Atualizacao() async{
+    String url = 'https://raw.githubusercontent.com/fuedgabriel/privacy_policy/master/Atualiza%C3%A7%C3%A3oAnimese';
+    return await http.get(url);
+  }
+  static Future AtualizacaoAnimese() async{
+    String url = 'https://raw.githubusercontent.com/fuedgabriel/privacy_policy/master/AnimeseAtualiza%C3%A7%C3%A3o2';
+    return await http.get(url);
+  }
+  static Future Message() async{
+    String url = 'https://raw.githubusercontent.com/fuedgabriel/privacy_policy/master/MessageAnimese';
+    return await http.get(url);
+  }
   static Future HomePage() async{
     String url = 'https://home.myvideo.vip/api-new/homenewalw';
     return await http.get(url);
@@ -57,7 +70,8 @@ class ANIMES{
   }
   // ignore: non_constant_identifier_names
   static Future Ep(id, ep, language) async{
-    String url = 'https://remainder.myvideo.vip/api-new/eps/'+id.toString()+'/'+language+'/1?search='+ep.toString();
+    String url = 'https://remainder.myvideo.vip/api-new/eps/'+id.toString()+'/'+language+'/1?search=all';
+    print(url);
     return await http.get(url);
   }
   // ignore: non_constant_identifier_names

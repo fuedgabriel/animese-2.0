@@ -41,7 +41,6 @@ class _AnimeListFavoriteState extends State<AnimeListFavorite> {
     return Scaffold(
       drawer: MenuWidget(page: 'Favorite',),
       appBar: AppBar(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(0), bottom: Radius.circular(40)),),
         title: Center(child: Text('Favoritos'),),
         elevation: 5,
       ),

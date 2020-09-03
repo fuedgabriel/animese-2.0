@@ -1,22 +1,27 @@
 //Request
 import 'package:animese/request/JSON/AnimeListJson/AnimeLittleListJson.dart';
 //widget
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 //pages
 import 'package:animese/screens/Player/Player.dart';
+import 'package:animese/screens/Player/PlayerMovieOva.dart';
+
+import '../PosterMovieOva.dart';
 
 
 // ignore: camel_case_types
 class Horizontal_scroll extends StatelessWidget {
   final List<LittleListAnimeJson> images;
   final String title;
+  final String type;
 
 
   Horizontal_scroll({
     this.images,
-    this.title
+    this.title,
+    this.type
+
   });
 
   @override
@@ -44,52 +49,47 @@ class Horizontal_scroll extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.38,
+          height: 180,
           width: double.infinity,
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
             scrollDirection: Axis.horizontal,
             itemCount: images.length,
             itemBuilder: (BuildContext context, int index) {
-              return Container(
-                padding: EdgeInsets.all(0),
-                width: MediaQuery.of(context).size.width * 0.34,
-                height: MediaQuery.of(context).size.height * 0.35,
-                child: Card(
-                  elevation: 5,
-                  color: Colors.white.withOpacity(0.4),
-                  child: ListView(
-                    padding: EdgeInsets.all(0),
-                    children: <Widget>[
-                      GestureDetector(
-                        child: CachedNetworkImage(
-                          imageUrl: images[index].capa,
-                          alignment: Alignment.topCenter,
-                          imageBuilder: (context, imageProvider) => Image(
-                            image: imageProvider,
-                            height: MediaQuery.of(context).size.height * 0.28,
-                            width: MediaQuery.of(context).size.width * 0.27,
-                          ),
-                          placeholder: (context, url) => Image(image: AssetImage('assets/imgs/loading.gif')),
-                          errorWidget: (context, url, error) => Image(image: AssetImage('assets/imgs/loading.gif')),
+              return Card(
+                elevation: 5,
+                color: Colors.black,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    GestureDetector(
+                      child: CachedNetworkImage(
+                        imageUrl: images[index].capa,
+                        alignment: Alignment.topCenter,
+                        imageBuilder: (context, imageProvider) => Image(
+                          image: imageProvider,
+//                            height: MediaQuery.of(context).size.height * 0.28,
+                          width: MediaQuery.of(context).size.width * 0.27,
                         ),
-                        onTap: (){
-                          Navigator.pop(context);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                              builder: (context) => PlayerVideo(images[index].id, images[index].nome, 1, 'LEG', ['HD']),
-                          ),);
-                        },
+                        placeholder: (context, url) => Image(image: AssetImage('assets/imgs/loading.gif')),
+                        errorWidget: (context, url, error) => Image(image: AssetImage('assets/imgs/loading.gif')),
                       ),
-                      Text(images[index].nome,
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerVideoOvaMovie(images[index].id, images[index].nome, 1, 'LEG', 'F'),),);
+                      },
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      width: 150,
+                      child: Text(images[index].nome,
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.8),
-                          fontWeight: FontWeight.bold
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
