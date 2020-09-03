@@ -1,4 +1,4 @@
-package com.animese.animese;
+package com.animese.android;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "829426797033",
+    "firebase_url": "https://animese-animes.firebaseio.com",
+    "project_id": "animese-animes",
+    "storage_bucket": "animese-animes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829426797033:android:33d340df22c3607174e378",
+        "android_client_info": {
+          "package_name": "com.animese.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829426797033-o8ctrt10k87ijerbhta5vh5prkkl3ifs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCehY93-nsqVQlOhGbhVjGlo9bbhX9EDx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829426797033-o8ctrt10k87ijerbhta5vh5prkkl3ifs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
